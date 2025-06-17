@@ -257,6 +257,7 @@
     <Compile Include="Game\MsgEvents\DragonWar.cs" />
     <Compile Include="Game\MsgEvents\Old School.cs" />
     <Compile Include="Game\MsgEvents\LastManStand.cs" />
+    <Compile Include="Game\MsgEvents\LuckyDraw.cs" />
     <Compile Include="Game\MsgServer\AttackHandler\AddMana.cs" />
     <Compile Include="Game\MsgServer\AttackHandler\AirKick.cs" />
     <Compile Include="Game\MsgServer\AttackHandler\Algoritms\Extensions.cs" />

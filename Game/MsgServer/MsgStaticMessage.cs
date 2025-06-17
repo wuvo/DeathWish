@@ -58,8 +58,9 @@ namespace DeathWish.Game.MsgServer
             KungfuSchool = 10702,
             TreasureThief = 10549,
             KingOfTheHill = 10563,
-            WhackTheThief = 10703,
-           FootBall = 10704
+           WhackTheThief = 10703,
+           FootBall = 10704,
+           LuckyDraw = 10705
         }
         public enum Action : uint
         {
