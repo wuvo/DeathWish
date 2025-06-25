@@ -688,6 +688,7 @@
     <Compile Include="NPCs\Market\[35016] WuxingOven.cs" />
     <Compile Include="NPCs\Market\[390] LoveStone.cs" />
     <Compile Include="NPCs\Market\[44] Warehouseman.cs" />
+    <Compile Include="NPCs\Market\[6020] DailyQuestMaster.cs" />
     <Compile Include="NPCs\Market\[45] Conductress.cs" />
     <Compile Include="NPCs\Market\[5004] MillionaireLee.cs" />
     <Compile Include="NPCs\Market\[5015] MillionaireLeeGem.cs" />

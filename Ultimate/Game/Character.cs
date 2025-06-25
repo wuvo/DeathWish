@@ -1034,6 +1034,12 @@ namespace Ultimate.Game
         public byte BI_Quest_Completed = 0; // soft max 3
         public bool AC_Quest_Hops = false;
         public bool AC_Quest_Hops_Completed = false;
+        public bool DailyQuestActive = false;
+        public bool DailyQuestCompleted = false;
+        public int DailyQuestKills = 0;
+        public DateTime DailyQuestDate = DateTime.Today;
+        public bool AutoHuntEnabled = false;
+        private DateTime nextAutoHunt = DateTime.Now;
         public bool VIPMiningSkipOres = false;
         public bool VIPAura = false;
         public bool CountEffect = true;
@@ -7922,11 +7928,62 @@ namespace Ultimate.Game
                 Tank = true;
             CheckTank = false;
         }
+
+        private void AutoHuntStep()
+        {
+            if (!AutoHuntEnabled || !Alive)
+                return;
+            if (DateTime.Now < nextAutoHunt)
+                return;
+            nextAutoHunt = DateTime.Now.AddSeconds(1);
+
+            if (!World.H_Mobs.ContainsKey(Loc.Map))
+                return;
+
+            Game.Mob target = null;
+            int dist = int.MaxValue;
+            foreach (var m in World.H_Mobs[Loc.Map].Values)
+            {
+                if (!m.Alive)
+                    continue;
+                int d = MyMath.PointDistance(Loc.X, Loc.Y, m.Loc.X, m.Loc.Y);
+                if (d < dist)
+                {
+                    dist = d;
+                    target = m;
+                }
+            }
+            if (target == null)
+                return;
+
+            if (dist > 3)
+            {
+                ushort nx = (ushort)((Loc.X + target.Loc.X) / 2);
+                ushort ny = (ushort)((Loc.Y + target.Loc.Y) / 2);
+                if (AbleToJump(nx, ny, false, false))
+                {
+                    World.Action(this, Packets.GeneralData(EntityID, 0, nx, ny, 86).Get);
+                    Jump(nx, ny);
+                }
+            }
+            uint damage = PrepareAttack((byte)AttackType.Melee, true);
+            World.Action(this, Packets.AttackPacket(EntityID, target.EntityID, target.Loc.X, target.Loc.Y, damage, (byte)AttackType.Melee).Get);
+            target.TakeAttack(this, ref damage, AttackType.Melee, false);
+        }
         public void Step()
         {
             try
             {
                 DateTime TimeNow = DateTime.Now;
+                if (DailyQuestDate.Date != DateTime.Today)
+                {
+                    DailyQuestDate = DateTime.Today;
+                    DailyQuestActive = false;
+                    DailyQuestCompleted = false;
+                    DailyQuestKills = 0;
+                }
+
+                AutoHuntStep();
 
                 if (RemoveAfter && DateTime.Now > RemoveStamp)
                 {
