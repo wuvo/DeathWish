@@ -2878,6 +2878,15 @@ namespace Ultimate.Game
                                 }
                             }
                         }
+                        if (Char.DailyQuestActive && !Char.DailyQuestCompleted)
+                        {
+                            Char.DailyQuestKills += 1;
+                            if (Char.DailyQuestKills >= 100)
+                            {
+                                Char.DailyQuestCompleted = true;
+                                Char.MyClient.LocalMessage(2000, "You have completed the Daily Quest! Return to the Daily Quest Master.");
+                            }
+                        }
                     }
                     #endregion
                     #region Anniversary Quest

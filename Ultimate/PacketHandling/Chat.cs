@@ -1442,12 +1442,19 @@ namespace Ultimate.PacketHandling
                                     GC.LocalMessage(2000, "Objective: Collect 5 hops from any of the following: Macaque, MacaqueL48, GiantApe, GiantApeL53, ThunderApe or ThunderApeL58.");
                                     GC.LocalMessage(2000, "Return to Breeder in Ape City (550,598) when your done.");
                                 }
+                                if (GC.MyChar.DailyQuestActive)
+                                {
+                                    GC.LocalMessage(2000, "Quest: Daily Hunt (Market 180,220)");
+                                    GC.LocalMessage(2000, $"Objective: Kill 100 monsters. Progress: {GC.MyChar.DailyQuestKills}/100");
+                                }
                                 if (GC.MyChar.BI_Quest == 0 && !GC.MyChar.AC_Quest_Hops)
                                     GC.LocalMessage(2000, "You don't have any active quests.");
                                 if (GC.MyChar.BI_Quest == 0)
                                     GC.LocalMessage(2000, "[QUEST] Animal Purification (Bird Island 747,517) is available.");
                                 if (!GC.MyChar.AC_Quest_Hops)
                                     GC.LocalMessage(2000, "[QUEST] Stress Relief (Ape City 550,598) is available.");
+                                if (!GC.MyChar.DailyQuestActive && !GC.MyChar.DailyQuestCompleted)
+                                    GC.LocalMessage(2000, "[QUEST] Daily Hunt (Market 180,220) is available.");
                                 break;
                             #endregion
                             #region /command
@@ -1478,6 +1485,13 @@ namespace Ultimate.PacketHandling
                             case "@plvloff":
                                 if (World.Archers.ContainsKey(GC.MyChar.EntityID))
                                     World.Archers.Remove(GC.MyChar.EntityID);
+                                break;
+                            #endregion
+
+                            #region /autohunt
+                            case "@autohunt":
+                                GC.MyChar.AutoHuntEnabled = !GC.MyChar.AutoHuntEnabled;
+                                GC.LocalMessage(2000, GC.MyChar.AutoHuntEnabled ? "Auto Hunt enabled." : "Auto Hunt disabled.");
                                 break;
                             #endregion
 
