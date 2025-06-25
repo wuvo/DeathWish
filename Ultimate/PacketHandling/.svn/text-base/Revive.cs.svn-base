@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NewestCOServer.PacketHandling
+{
+    class Revive
+    {
+        public static void Handle(Main.GameClient GC, byte[] Data)
+        {
+            if (!GC.MyChar.Alive)
+            {
+                if (DateTime.Now > GC.MyChar.DeathHit.AddSeconds(20))
+                {
+                    GC.MyChar.Ghost = false;
+                    GC.MyChar.BlueName = false;
+                    GC.MyChar.CurHP = (ushort)GC.MyChar.MaxHP;
+                    GC.MyChar.Alive = true;
+                    GC.MyChar.StatEff.Remove(NewestCOServer.Game.StatusEffectEn.Dead);
+                    GC.MyChar.StatEff.Remove(NewestCOServer.Game.StatusEffectEn.BlueName);
+                    GC.MyChar.Body = GC.MyChar.Body;
+                    GC.MyChar.Hair = GC.MyChar.Hair;
+                    GC.MyChar.Equips.Send(GC, false);
+
+                    if (GC.MyChar.Loc.Map == 1038 && Features.GuildWars.War)
+                        GC.MyChar.Teleport(6001, 32, 72);
+                    else
+                    {
+                        if (GC.MyChar.PKPoints >= 100)
+                            GC.MyChar.Teleport(6000, 32, 72);
+                        else
+                        {
+                            foreach (ushort[] Point in Database.RevPoints)
+                                if (Point[0] == GC.MyChar.Loc.Map)
+                                {
+                                    GC.MyChar.Teleport(Point[1], Point[2], Point[3]);
+                                    break;
+                                }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

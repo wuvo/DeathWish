@@ -79,9 +79,7 @@ namespace DeathWish.Game.MsgServer
             if (client.Player.Intensify == true)
                 client.Player.Intensify = false;
             client.OnAutoAttack = false;
-            //NetShield
-            MsgLoader.SpeedProtect.MovementProdect(client);
-            //NetShield
+
             client.Player.RemoveBuffersMovements(packet);
 
             client.Player.Protect = Extensions.Time32.Now;

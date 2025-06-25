@@ -1,0 +1,48 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NewestCOServer.PacketHandling.ItemPacket
+{
+    public class DBUpgrade
+    {
+        public static void Handle(Main.GameClient GC, byte[] Data)
+        {
+            uint EquipUID = BitConverter.ToUInt32(Data, 4);
+            uint MeteorUID = BitConverter.ToUInt32(Data, 8);
+
+            Game.Item Equip = GC.MyChar.FindInvItem(EquipUID);
+            Game.Item DragonBall = GC.MyChar.FindInvItem(MeteorUID);
+
+            if (DragonBall.ID == 1088000)
+            {
+                Game.ItemIDManipulation E = new Game.ItemIDManipulation(Equip.ID);
+
+                sbyte Chance = (sbyte)(100 - (Equip.DBInfo.LevReq / 3));
+                byte Quality = (byte)E.Quality;
+
+                if (Quality == 6)
+                    Chance -= 25;
+                else if (Quality == 7)
+                    Chance -= 40;
+                else if (Quality == 8)
+                    Chance -= 70;
+
+                if (Quality < 9)
+                {
+                    if (Quality < 5) Quality = 5;
+                    E.QualityChange((Game.Item.ItemQuality)(Quality + 1));
+                     Chance += 16;
+                    if (MyMath.ChanceSuccess(Chance))
+                    {
+                        GC.MyChar.RemoveItem(Equip);
+                        Equip.ID = E.ToID();
+                        GC.MyChar.AddItem(Equip);
+                    }
+                    GC.MyChar.RemoveItem(DragonBall);
+                }
+            }
+        }
+    }
+}

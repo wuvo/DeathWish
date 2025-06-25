@@ -1,0 +1,928 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EDED5BCD-DB73-4E52-9DC2-A5FE4231A444}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ultimate</RootNamespace>
+    <AssemblyName>Ultimate</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+    <WarningLevel>3</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WarningLevel>3</WarningLevel>
+    <Optimize>false</Optimize>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ShannaraDebug|AnyCPU'">
+    <OutputPath>bin\ShannaraDebug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ShannaraDebug|x86'">
+    <OutputPath>bin\x86\ShannaraDebug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ShannaraDebug|x64'">
+    <OutputPath>bin\x64\ShannaraDebug\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.3.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>packages\BouncyCastle.1.8.3.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="CO2_CORE_DLL">
+      <HintPath>D:\Users\Nyorai\Downloads\rev20\bin\win32\debug (x86)\CO2_CORE_DLL.dll</HintPath>
+    </Reference>
+    <Reference Include="DSharpPlus, Version=3.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\DSharpPlus.3.2.3\lib\net46\DSharpPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.11.4.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>packages\Google.Protobuf.3.11.4\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4, Version=1.1.11.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>packages\K4os.Compression.LZ4.1.1.11\lib\net46\K4os.Compression.LZ4.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4.Streams, Version=1.1.11.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>packages\K4os.Compression.LZ4.Streams.1.1.11\lib\net46\K4os.Compression.LZ4.Streams.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Hash.xxHash, Version=1.0.6.0, Culture=neutral, PublicKeyToken=32cd54395057cec3, processorArchitecture=MSIL">
+      <HintPath>packages\K4os.Hash.xxHash.1.0.6\lib\net46\K4os.Hash.xxHash.dll</HintPath>
+    </Reference>
+    <Reference Include="ManagedOpenSsl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\ManagedOpenSsl.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Bcl.HashCode.1.1.0\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.EntityFrameworkCore, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.EntityFrameworkCore.3.1.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Abstractions, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.EntityFrameworkCore.Abstractions.3.1.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Relational, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.EntityFrameworkCore.Relational.3.1.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.Caching.Abstractions.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Memory, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.Caching.Memory.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Caching.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.Configuration.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.Configuration.Abstractions.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Binder, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.Configuration.Binder.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.Binder.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.DependencyInjection.3.1.1\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.DependencyInjection.Abstractions.3.1.1\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.Logging.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.Logging.Abstractions.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.Options.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Extensions.Primitives.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=8.0.22.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>packages\MySql.Data.8.0.22\lib\net452\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.EntityFrameworkCore, Version=8.0.22.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>packages\MySql.Data.EntityFrameworkCore.8.0.22\lib\netstandard2.0\MySql.Data.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=3.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.2.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Collections.Immutable.1.7.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.ComponentModel.Annotations.4.7.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.DiagnosticSource.4.7.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Ubiety.Dns.Core, Version=2.2.1.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>packages\MySql.Data.8.0.22\lib\net452\Ubiety.Dns.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Zstandard.Net, Version=1.1.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>packages\MySql.Data.8.0.22\lib\net452\Zstandard.Net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bosses\BossHandler.cs" />
+    <Compile Include="Bosses\MobBase.cs" />
+    <Compile Include="Bosses\[3822] Raikou.cs" />
+    <Compile Include="Bosses\[3821] Capricorn.cs" />
+    <Compile Include="Bosses\[4152] TeratoDragon.cs" />
+    <Compile Include="Bosses\[3823] Tash.cs" />
+    <Compile Include="Bosses\[4172] ThrillingSpook.cs" />
+    <Compile Include="CheatPacket.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="Core\GenericActionList.cs" />
+    <Compile Include="Cryptographer.cs" />
+    <Compile Include="Database.cs" />
+    <Compile Include="Dbase\Migration.cs" />
+    <Compile Include="Dbase\Portal.cs" />
+    <Compile Include="Discord.cs" />
+    <Compile Include="DMap.cs" />
+    <Compile Include="Events\PoleDomination\PoleWarAC.cs" />
+    <Compile Include="Events\PoleDomination\PoleWarBI.cs" />
+    <Compile Include="Events\PoleDomination\PoleWarDC.cs" />
+    <Compile Include="Events\PoleDomination\PoleWarPC.cs" />
+    <Compile Include="Events\PoleDomination\PoleWarTC.cs" />
+    <Compile Include="Features\Donations.cs" />
+    <Compile Include="IPBAn.cs" />
+    <Compile Include="DropRates.cs" />
+    <Compile Include="Enum\GeneralDataType.cs" />
+    <Compile Include="Enum\ScreenSize.cs" />
+    <Compile Include="Enum\SkillSort.cs" />
+    <Compile Include="Enum\TargetType.cs" />
+    <Compile Include="Events\Base\Counter.cs" />
+    <Compile Include="Events\Base\EventBase.cs" />
+    <Compile Include="Events\Capture the Bag.cs" />
+    <Compile Include="Events\CityWarAC.cs" />
+    <Compile Include="Events\CityWarBI.cs" />
+    <Compile Include="Events\CityWarDC.cs" />
+    <Compile Include="Events\CityWarPC.cs" />
+    <Compile Include="Events\CityWarTC.cs" />
+    <Compile Include="Events\ElitePK.cs" />
+    <Compile Include="Events\Football.cs" />
+    <Compile Include="Events\GameOfThones.cs" />
+    <Compile Include="Events\Last Man Standing.cs" />
+    <Compile Include="Events\Pimp Out Santa.cs" />
+    <Compile Include="Events\Cyclone War.cs" />
+    <Compile Include="Events\TCGuildWars.cs" />
+    <Compile Include="Events\TeamPKTourny.cs" />
+    <Compile Include="Events\Wack-A-Mole - Halloween.cs" />
+    <Compile Include="Events\Infection - Halloween.cs" />
+    <Compile Include="Events\Ladder Tournament.cs" />
+    <Compile Include="Extra\Durability.cs" />
+    <Compile Include="Extra\SkillsID.cs" />
+    <Compile Include="Extra\ThreadSafeDictionary.cs" />
+    <Compile Include="Features\Anniversary.cs" />
+    <Compile Include="Features\Anticheat.cs" />
+    <Compile Include="Features\AutoPayments_System.cs" />
+    <Compile Include="Features\AutoVotes_System.cs" />
+    <Compile Include="Features\Bounty.cs" />
+    <Compile Include="Events\CounterClockWar.cs" />
+    <Compile Include="Events\FreezeWar.cs" />
+    <Compile Include="Events\Infection.cs" />
+    <Compile Include="Events\Meteor Shower.cs" />
+    <Compile Include="Events\Dragon War.cs" />
+    <Compile Include="Events\PassTheBomb.cs" />
+    <Compile Include="Events\King of the Hill.cs" />
+    <Compile Include="Events\SkillChampionship.cs" />
+    <Compile Include="Events\TDM.cs" />
+    <Compile Include="Events\Vampire War.cs" />
+    <Compile Include="Features\Changelog.cs" />
+    <Compile Include="Features\Cloudsaint.cs" />
+    <Compile Include="Features\DiceKing.cs" />
+    <Compile Include="Features\ElitePKStats.cs" />
+    <Compile Include="Features\HouseTable.cs" />
+    <Compile Include="Events\SkillPK.cs" />
+    <Compile Include="Features\Poison.cs" />
+    <Compile Include="Features\Arena.cs" />
+    <Compile Include="Features\PowerLevel Request.cs" />
+    <Compile Include="Features\Qualifier.cs" />
+    <Compile Include="Features\GemEffect.cs" />
+    <Compile Include="Features\Guilds.cs" />
+    <Compile Include="Events\GuildWars.cs" />
+    <Compile Include="Features\Mining.cs" />
+    <Compile Include="Features\PersonalShops.cs" />
+    <Compile Include="Features\Skills.cs" />
+    <Compile Include="Features\Teams.cs" />
+    <Compile Include="Events\ClassPK.cs" />
+    <Compile Include="Events\TopSpouse.cs" />
+    <Compile Include="Events\WeeklyPKChampion.cs" />
+    <Compile Include="Features\Weather.cs" />
+    <Compile Include="Game\Character.cs" />
+    <Compile Include="Game\Companion.cs" />
+    <Compile Include="Game\Item.cs" />
+    <Compile Include="Game\Mob.cs" />
+    <Compile Include="Game\NHibernateHelper.cs" />
+    <Compile Include="Game\SOB.cs" />
+    <Compile Include="InLineAlgorithm.cs" />
+    <Compile Include="Items\Furniture\[720164] Snowman.cs" />
+    <Compile Include="Items\Furniture\[720165] ChristmasTree.cs" />
+    <Compile Include="Items\Furniture\[720166] ChristmasTree.cs" />
+    <Compile Include="Items\Furniture\[720167] ChristmasTree.cs" />
+    <Compile Include="Items\Furniture\[720391] ChristmasWreath.cs" />
+    <Compile Include="Items\Furniture\[720392] ChristmasTree.cs" />
+    <Compile Include="Items\Furniture\[721177] Lamp.cs" />
+    <Compile Include="Items\Furniture\[721178] LowShelf.cs" />
+    <Compile Include="Items\Furniture\[721179] Cabinet.cs" />
+    <Compile Include="Items\Furniture\[721180] HighShelf.cs" />
+    <Compile Include="Items\Furniture\[721181] BombeChest.cs" />
+    <Compile Include="Items\Furniture\[721182] RosewoodCabinet.cs" />
+    <Compile Include="Items\Furniture\[721183] HighCabinet.cs" />
+    <Compile Include="Items\Furniture\[721184] FoldingScreen.cs" />
+    <Compile Include="Items\Furniture\[721185] Dresser.cs" />
+    <Compile Include="Items\Furniture\[721186] BasinRack.cs" />
+    <Compile Include="Items\Furniture\[721187] Chair.cs" />
+    <Compile Include="Items\Furniture\[721188] EndTable.cs" />
+    <Compile Include="Items\Furniture\[721225] GreenPearl.cs" />
+    <Compile Include="Items\Furniture\[721226] Fountain.cs" />
+    <Compile Include="Items\Furniture\[721227] Swing.cs" />
+    <Compile Include="Items\Furniture\[721228] Windmill.cs" />
+    <Compile Include="Items\Furniture\[721229] HobbyHorse.cs" />
+    <Compile Include="Items\Furniture\[721230] Rockery.cs" />
+    <Compile Include="Items\Furniture\[721231] StoneStatue.cs" />
+    <Compile Include="Items\Furniture\[721232] StoneLion.cs" />
+    <Compile Include="Items\Furniture\[721233] BlackDragon.cs" />
+    <Compile Include="Items\Furniture\[721234] BronzeTurtle.cs" />
+    <Compile Include="Items\Furniture\[721235] Phoenix.cs" />
+    <Compile Include="Items\Gates\[1060102] StoneCityGate.cs" />
+    <Compile Include="Items\Gates\[1060020] TwinCityGate.cs" />
+    <Compile Include="Items\Gates\[1060021] DesertCityGate.cs" />
+    <Compile Include="Items\Gates\[1060022] ApeCityGate.cs" />
+    <Compile Include="Items\Gates\[1060023] BirdIslandGate.cs" />
+    <Compile Include="Items\Gates\[1060023] PhoenixCastleGate.cs" />
+    <Compile Include="Items\Gates\[1060025 - 1060038] WindScroll.cs" />
+    <Compile Include="Items\GemBox\[720126] DragonBox.cs" />
+    <Compile Include="Items\GemBox\[720135] KylinBox.cs" />
+    <Compile Include="Items\GemBox\[721285] MoonBox.cs" />
+    <Compile Include="Items\GemBox\[720374] Giftbag.cs" />
+    <Compile Include="Items\GemBox\[721751] VioletBox.cs" />
+    <Compile Include="Items\GemBox\[720125] PhoenixBox.cs" />
+    <Compile Include="Items\GemBox\[722358] FuryBox.cs" />
+    <Compile Include="Items\GemBox\[722450] RainbowBox.cs" />
+    <Compile Include="Items\Hairdye\[1060030] BlackDye.cs" />
+    <Compile Include="Items\Hairdye\[1060040] VioletDye.cs" />
+    <Compile Include="Items\Hairdye\[1060050] BlueDye.cs" />
+    <Compile Include="Items\Hairdye\[1060060] GreenDye.cs" />
+    <Compile Include="Items\Hairdye\[1060070] BrownDye.cs" />
+    <Compile Include="Items\Hairdye\[1060080] RedDye.cs" />
+    <Compile Include="Items\Hairdye\[1060090] WhiteDye.cs" />
+    <Compile Include="Items\hunt\[721619] EraBoxGold.cs" />
+    <Compile Include="Items\hunt\[721851] EraBoxSilver.cs" />
+    <Compile Include="Items\hunt\[721955] EraBoxBronze.cs" />
+    <Compile Include="Items\IItem.cs" />
+    <Compile Include="Items\Manager.cs" />
+    <Compile Include="Items\Misc\Fireworks\[720030] Firework.cs" />
+    <Compile Include="Items\Misc\Fireworks\[720031] EndlessLove.cs" />
+    <Compile Include="Items\Misc\Fireworks\[720032] MyWish.cs" />
+    <Compile Include="Items\Misc\Other\[720140] GreenEgg.cs" />
+    <Compile Include="Items\Misc\Other\[720141] RedEgg.cs" />
+    <Compile Include="Items\Misc\Other\[1088000] DragonBall.cs" />
+    <Compile Include="Items\Misc\Other\[1088001] Meteor.cs" />
+    <Compile Include="Items\Misc\Other\[720020] StatueScroll.cs" />
+    <Compile Include="Items\Misc\Other\[723712] ItemPack.cs" />
+    <Compile Include="Items\Misc\Other\[720027] MeteorScroll.cs" />
+    <Compile Include="Items\Misc\Other\[720028] CloudSaint`sJar.cs" />
+    <Compile Include="Items\Misc\Other\[720028] DBScroll.cs" />
+    <Compile Include="Items\Misc\Other\[721080] MoonBox.cs" />
+    <Compile Include="Items\Misc\Other\[721246] CCGWBomb.cs" />
+    <Compile Include="Items\Misc\Other\[722057] PowerEXPBall.cs" />
+    <Compile Include="Items\Misc\Other\[722399] foxheart.cs" />
+    <Compile Include="Items\Misc\Other\[722700] MiniExpPotion.cs" />
+    <Compile Include="Items\Misc\Other\[723017] ExpPotion.cs" />
+    <Compile Include="Items\Misc\Other\[723483] FarmPack.cs" />
+    <Compile Include="Items\Misc\Other\[723584] BlackTulip.cs" />
+    <Compile Include="Items\Misc\Other\[723711] MeteorTearPack.cs" />
+    <Compile Include="Items\Misc\Other\[729910] DBScrollBag.cs" />
+    <Compile Include="Items\Misc\Other\[729912] MetScrollBag.cs" />
+    <Compile Include="Items\Misc\Other\[780000] VIP PointCard Mining.cs" />
+    <Compile Include="Items\Misc\Other\[780001] VIP PointCard.cs" />
+    <Compile Include="Items\Misc\Quests\AncientDevil\[1200007] WarriorAmulet.cs" />
+    <Compile Include="Items\Misc\Quests\AncientDevil\[1200008] TrojanAmulet.cs" />
+    <Compile Include="Items\Misc\Quests\AncientDevil\[1200009] FireAmulet.cs" />
+    <Compile Include="Items\Misc\Quests\AncientDevil\[1200010] WaterAmulet.cs" />
+    <Compile Include="Items\Misc\Quests\AncientDevil\[1200011] ArcherAmulet.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[720151] CarolPage1.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[720152] CarolPage2.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[720153] CarolPage3.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[720154] CarolPage4.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[720155] CarolPage5.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[720156] MusicBook.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[720163] Snowball.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[722107] PheasantPlate.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[722108] TurtledovePlate.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[722109] RobinPlate.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[722110] Apparition.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[722111] WingedSnakePlate.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[722113] Ratling.cs" />
+    <Compile Include="Items\Misc\Quests\Christmas\[722114] MasqueBox.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Expballs\[720658] MagicBall.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Expballs\[720664] SuperBall.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Expballs\[720670] UltraBall.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Expballs\[720680] HeavenPill.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Expballs\[720686] MysteryPill.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Expballs\[720692] WindPill.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Expballs\[720698] ThulitePill.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720653] HopeGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720654] MascotGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720655] MammonGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720656] DreamGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720657] JoyGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720659] FestivalGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720660] SweetGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720661] LegendGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720662] PureGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720663] MysticGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720665] VioletGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720666] FlareGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720667] CuteGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720668] StarGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720669] FantasyGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720675] GhostGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720676] SoulGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720677] BloodGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720678] LifeGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720679] FrostGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720681] DeityGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720682] FlowerGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720683] HeartGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720684] ButterflyGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720685] NimbusGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720687] CloudGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720688] JewelGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720689] ShadowGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720690] RainbowGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720691] KylinGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720693] AchroiteGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720694] AgateGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720695] QuartzGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720696] JasperGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\Gold Rewards\[720697] OpalGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\[720650] DemonBox.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\[720651] AncientDemonBox.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\[720652] FloodDemonBox.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\[720671] HeavenDemonBox.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\[720672] ChaosDemonBox.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\[720673] SacredDemonBox.cs" />
+    <Compile Include="Items\Misc\Quests\DemonBoxes\[720674] AuroraDemonBox.cs" />
+    <Compile Include="Items\Misc\Quests\Easter\[720121] EasterGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\Easter\[720122] EasterSilverPack.cs" />
+    <Compile Include="Items\Misc\Quests\Easter\[720123] EasterBronzePack.cs" />
+    <Compile Include="Items\Misc\Quests\Easter\[720124] EasterFlamePack.cs" />
+    <Compile Include="Items\Misc\Quests\Elements\[730705] ElementsBox.cs" />
+    <Compile Include="Items\Misc\Quests\General\[721954] TransformCandy.cs" />
+    <Compile Include="Items\Misc\Quests\Halloween\[720136] HalloweenGoldPack.cs" />
+    <Compile Include="Items\Misc\Quests\Halloween\[720137] HalloweenSilverPack.cs" />
+    <Compile Include="Items\Misc\Quests\Halloween\[720138] HalloweenBronzePack.cs" />
+    <Compile Include="Items\Misc\Quests\Halloween\[720139] HalloweenRegularPack.cs" />
+    <Compile Include="Items\Misc\Quests\Halloween\[721960] BigPumpkin.cs" />
+    <Compile Include="Items\Misc\Quests\Halloween\[721970] PumpkinBox.cs" />
+    <Compile Include="Items\Misc\Quests\Halloween\[722176] Pumpkin.cs" />
+    <Compile Include="Items\Misc\Quests\Labyrinth\[721533] SunDiamond.cs" />
+    <Compile Include="Items\Misc\Quests\Labyrinth\[721534] MoonDiamond.cs" />
+    <Compile Include="Items\Misc\Quests\Labyrinth\[721535] StarDiamond.cs" />
+    <Compile Include="Items\Misc\Quests\Labyrinth\[721536] CloudDiamond.cs" />
+    <Compile Include="Items\Misc\Quests\Labyrinth\[721540] AncestorBox.cs" />
+    <Compile Include="Items\Misc\Quests\Labyrinth\[721541] SunBox.cs" />
+    <Compile Include="Items\Misc\Quests\Labyrinth\[721542] WaningMoonBox.cs" />
+    <Compile Include="Items\Misc\Quests\Labyrinth\[721543] StarBox.cs" />
+    <Compile Include="Items\Misc\Quests\Labyrinth\[721544] CloudBox.cs" />
+    <Compile Include="Items\Potions\HP Packs\[720010] AmritaBox.cs" />
+    <Compile Include="Items\Potions\HP Packs\[720011] PanaceaBox.cs" />
+    <Compile Include="Items\Potions\HP Packs\[720012] GinsengBox.cs" />
+    <Compile Include="Items\Potions\HP Packs\[720013] VanillaBox.cs" />
+    <Compile Include="Items\Potions\HP Packs\[721330] MilGinsengBox.cs" />
+    <Compile Include="Items\Potions\HP Pots\[1000000] Stancher.cs" />
+    <Compile Include="Items\Potions\HP Pots\[1000010] Resolutive.cs" />
+    <Compile Include="Items\Potions\HP Pots\[1000020] Painkiller.cs" />
+    <Compile Include="Items\Potions\HP Pots\[1000030] Amrita.cs" />
+    <Compile Include="Items\Potions\HP Pots\[1002000] Panacea.cs" />
+    <Compile Include="Items\Potions\HP Pots\[1002010] Ginseng.cs" />
+    <Compile Include="Items\Potions\HP Pots\[1002020] Vanilla.cs" />
+    <Compile Include="Items\Potions\HP Pots\[1002050] MilGinseng.cs" />
+    <Compile Include="Items\Potions\MP Packs\[720014] RecoveryPillBox.cs" />
+    <Compile Include="Items\Potions\MP Packs\[720015] SoulPillBox.cs" />
+    <Compile Include="Items\Potions\MP Packs\[720016] RefreshingPillBox.cs" />
+    <Compile Include="Items\Potions\MP Packs\[720017] ChantPillBox.cs" />
+    <Compile Include="Items\Potions\MP Pots\[1001000] Agrypnotic.cs" />
+    <Compile Include="Items\Potions\MP Pots\[1001010] Tonic.cs" />
+    <Compile Include="Items\Potions\MP Pots\[1001020] PearlOintment.cs" />
+    <Compile Include="Items\Potions\MP Pots\[1001030] RecoveryPill.cs" />
+    <Compile Include="Items\Potions\MP Pots\[1001040] SoulPill.cs" />
+    <Compile Include="Items\Potions\MP Pots\[1002030] RefreshingPill.cs" />
+    <Compile Include="Items\Potions\MP Pots\[1002040] ChantPill.cs" />
+    <Compile Include="Items\Potions\[723725] LifeFruitBasket.cs" />
+    <Compile Include="Items\Potions\[723726] LifeFruit.cs" />
+    <Compile Include="Items\SkillBooks\DanceBooks\[725018] Dance2.cs" />
+    <Compile Include="Items\SkillBooks\DanceBooks\[725019] Dance3.cs" />
+    <Compile Include="Items\SkillBooks\DanceBooks\[725020] Dance4.cs" />
+    <Compile Include="Items\SkillBooks\DanceBooks\[725021] Dance5.cs" />
+    <Compile Include="Items\SkillBooks\DanceBooks\[725022] Dance6.cs" />
+    <Compile Include="Items\SkillBooks\DanceBooks\[725023] Dance7.cs" />
+    <Compile Include="Items\SkillBooks\DanceBooks\[725024] Dance8.cs" />
+    <Compile Include="Items\SkillBooks\Linear Skills\[725005] FastBlade.cs" />
+    <Compile Include="Items\SkillBooks\Linear Skills\[725010] ScentSword.cs" />
+    <Compile Include="Items\SkillBooks\Linear Skills\[725050] ViperFang.cs" />
+    <Compile Include="Items\SkillBooks\Magic Skills\[1060100] BombScroll.cs" />
+    <Compile Include="Items\SkillBooks\Magic Skills\[1060101] FireOfHell.cs" />
+    <Compile Include="Items\SkillBooks\Magic Skills\[725000] Thunder.cs" />
+    <Compile Include="Items\SkillBooks\Magic Skills\[725001] Fire.cs" />
+    <Compile Include="Items\SkillBooks\Magic Skills\[725002] Tornado.cs" />
+    <Compile Include="Items\SkillBooks\Magic Skills\[725003] Cure.cs" />
+    <Compile Include="Items\SkillBooks\Magic Skills\[725004] Lightning.cs" />
+    <Compile Include="Items\SkillBooks\Magic Skills\[725028] SpeedLightning.cs" />
+    <Compile Include="Items\SkillBooks\OneHand Skills\[725013] Penetration.cs" />
+    <Compile Include="Items\SkillBooks\OneHand Skills\[725029] Phoenix.cs" />
+    <Compile Include="Items\SkillBooks\OneHand Skills\[725030] Boom.cs" />
+    <Compile Include="Items\SkillBooks\OneHand Skills\[725040] Seizer.cs" />
+    <Compile Include="Items\SkillBooks\OneHand Skills\[725041] Earthquake.cs" />
+    <Compile Include="Items\SkillBooks\OneHand Skills\[725042] Rage.cs" />
+    <Compile Include="Items\SkillBooks\OneHand Skills\[725043] Celestial.cs" />
+    <Compile Include="Items\SkillBooks\OneHand Skills\[725044] Roamer.cs" />
+    <Compile Include="Items\SkillBooks\Other\[725015] DivineHare.cs" />
+    <Compile Include="Items\SkillBooks\Other\[725016] NightDevil.cs" />
+    <Compile Include="Items\SkillBooks\Other\[725025] FlyingMoon.cs" />
+    <Compile Include="Items\SkillBooks\TwoHand Skills\[725011] WideStrike.cs" />
+    <Compile Include="Items\SkillBooks\TwoHand Skills\[725012] SpeedGun.cs" />
+    <Compile Include="Items\SkillBooks\TwoHand Skills\[725014] Halt.cs" />
+    <Compile Include="Items\SkillBooks\TwoHand Skills\[725026] Snow.cs" />
+    <Compile Include="Items\SkillBooks\TwoHand Skills\[725027] StrandedMonster.cs" />
+    <Compile Include="Items\SkillBooks\TwoHand Skills\[725031] Boreas.cs" />
+    <Compile Include="Items\StarterPacks\[723753] Taoist.cs" />
+    <Compile Include="Items\StarterPacks\[723754] Warrior.cs" />
+    <Compile Include="Items\StarterPacks\[723755] Trojan.cs" />
+    <Compile Include="Items\StarterPacks\[723756] Archer.cs" />
+    <Compile Include="Items\UsePlusOneStone.cs" />
+    <Compile Include="Main\CryptoRandom.cs" />
+    <Compile Include="Main\Sockets\MasterSocket - Cópia.cs" />
+    <Compile Include="MSVCRT.cs" />
+    <Compile Include="MyRandom.cs" />
+    <Compile Include="MySqlDB\ConquerDataContext.cs" />
+    <Compile Include="MySqlDB\Domain\mining_stats.cs" />
+    <Compile Include="MySqlDB\Domain\Stats.cs" />
+    <Compile Include="MySqlDB\Repositories\IRepository.cs" />
+    <Compile Include="MySqlDB\Repositories\MinigRepository.cs" />
+    <Compile Include="MySqlDB\Repositories\Respository.cs" />
+    <Compile Include="MySqlDB\Repositories\StatsRepository.cs" />
+    <Compile Include="MySql\MySqlCommand.cs" />
+    <Compile Include="MySql\MySqlReader.cs" />
+    <Compile Include="MyThread.cs" />
+    <Compile Include="Game\NPC.cs" />
+    <Compile Include="Game\World.cs" />
+    <Compile Include="Main\AuthWorker.cs" />
+    <Compile Include="Main\Blowfish.cs" />
+    <Compile Include="Main\GameClient.cs" />
+    <Compile Include="MyMath.cs" />
+    <Compile Include="Native.cs" />
+    <Compile Include="Main\Packets.cs" />
+    <Compile Include="NewAntiCheat.cs" />
+    <Compile Include="NPCs\Ape City\DisCity\[3298] SolarSaint - First floor.cs" />
+    <Compile Include="NPCs\Ape City\DisCity\[3299] SolarSaint - Second floor.cs" />
+    <Compile Include="NPCs\Ape City\DisCity\[3300] SolarSaint - Fourth floor.cs" />
+    <Compile Include="NPCs\Ape City\[10028] Warehouseman.cs" />
+    <Compile Include="NPCs\Ape City\[10053] Conductress.cs" />
+    <Compile Include="NPCs\Ape City\[1008] Assistant.cs" />
+    <Compile Include="NPCs\Ape City\[19001] Old Quarrier.cs" />
+    <Compile Include="NPCs\Ape City\[3215] SolarSaint.cs" />
+    <Compile Include="NPCs\Ape City\[6670] Breeder.cs" />
+    <Compile Include="NPCs\Bird Island\[10027] Warehouseman.cs" />
+    <Compile Include="NPCs\Bird Island\[10056] Conductress.cs" />
+    <Compile Include="NPCs\Bird Island\[20001] Minner.cs" />
+    <Compile Include="NPCs\Bird Island\[41] Artisan - Weapon socket.cs" />
+    <Compile Include="NPCs\Bird Island\[6669] Cathy.cs" />
+    <Compile Include="NPCs\Bird Island\[800018] GreenSnake.cs" />
+    <Compile Include="NPCs\Bird Island\[800019] WingedSnake.cs" />
+    <Compile Include="NPCs\Bird Island\[9535] Exorcist.cs" />
+    <Compile Include="NPCs\Bird Island\[9536] TrojanGuard.cs" />
+    <Compile Include="NPCs\Bird Island\[9537] FireGuard.cs" />
+    <Compile Include="NPCs\Bird Island\[9538] WaterGuard.cs" />
+    <Compile Include="NPCs\Bird Island\[9539] ArcherGuard.cs" />
+    <Compile Include="NPCs\Bird Island\[9540] WarriorGuard.cs" />
+    <Compile Include="NPCs\CityWar\[3010] TwinCity.cs" />
+    <Compile Include="NPCs\CityWar\[3011] PhoenixCastle.cs" />
+    <Compile Include="NPCs\CityWar\[3012] ApeCity.cs" />
+    <Compile Include="NPCs\CityWar\[3013] DesertCity.cs" />
+    <Compile Include="NPCs\CityWar\[3014] BirdIsland.cs" />
+    <Compile Include="NPCs\CityWar\[3015] Leave.cs" />
+    <Compile Include="NPCs\CityWar\[3016] Leave.cs" />
+    <Compile Include="NPCs\CityWar\[3017] Leave.cs" />
+    <Compile Include="NPCs\CityWar\[3018] Leave.cs" />
+    <Compile Include="NPCs\CityWar\[3019] Leave.cs" />
+    <Compile Include="NPCs\Desert City\[10011] Warehouseman.cs" />
+    <Compile Include="NPCs\Desert City\[10051] Conductress.cs" />
+    <Compile Include="NPCs\Desert City\[1006] Assistant.cs" />
+    <Compile Include="NPCs\Desert City\[18811] Assistant - AdvancedZone.cs" />
+    <Compile Include="NPCs\Desert City\[20002] Joe.cs" />
+    <Compile Include="NPCs\Desert City\[2023] StoneBandit.cs" />
+    <Compile Include="NPCs\Desert City\[300005] Alcoholist.cs" />
+    <Compile Include="NPCs\Desert City\[30000] MarriageNPC.cs" />
+    <Compile Include="NPCs\Guild Area\[159748] GuildConductor 4.cs" />
+    <Compile Include="NPCs\Guild Area\[159749] GuildConductor 3.cs" />
+    <Compile Include="NPCs\Guild Area\[159750] GuildConductor 2.cs" />
+    <Compile Include="NPCs\Guild Area\[159751] GuildConductor 1.cs" />
+    <Compile Include="NPCs\Guild Area\[1621] GuildBeastKeeper.cs" />
+    <Compile Include="NPCs\Guild Area\[30001] GuildChief.cs" />
+    <Compile Include="NPCs\Guild Area\[6700] Pole.cs" />
+    <Compile Include="NPCs\Guild Area\[6701] LeftGate.cs" />
+    <Compile Include="NPCs\Guild Area\[6702] RightGate.cs" />
+    <Compile Include="NPCs\Guild Area\[7000] GuildController.cs" />
+    <Compile Include="NPCs\Market\PayPalHandler.cs" />
+    <Compile Include="NPCs\Market\[123923] ChangeName.cs" />
+    <Compile Include="NPCs\Market\[10062] MagicArtisan.cs" />
+    <Compile Include="NPCs\Market\[101050] BossReward.cs" />
+    <Compile Include="NPCs\Market\[1368] PrizeNpc.cs" />
+    <Compile Include="NPCs\Market\[1366] PrizeNPC.cs" />
+    <Compile Include="NPCs\Market\[1367]PrizeNPCEVENT.cs" />
+    <Compile Include="NPCs\Market\[20561] BlackMarket.cs" />
+    <Compile Include="NPCs\Market\[20005] Eternity.cs" />
+    <Compile Include="NPCs\Market\[20006] CelestialTao.cs" />
+    <Compile Include="NPCs\Market\[2039] MineCaveOverlord.cs" />
+    <Compile Include="NPCs\Market\[2053] Overlord.cs" />
+    <Compile Include="NPCs\Market\[2056] Item Socket.cs" />
+    <Compile Include="NPCs\Market\[2056] Nina - Leave Arena.cs" />
+    <Compile Include="NPCs\Market\[2065] JewelerLau.cs" />
+    <Compile Include="NPCs\Market\[2] Costumer.cs" />
+    <Compile Include="NPCs\Market\[300000] Shelby.cs" />
+    <Compile Include="NPCs\Market\[300001] Starlit.cs" />
+    <Compile Include="NPCs\Market\[30156] HouseAdmin.cs" />
+    <Compile Include="NPCs\Market\[30158] Craftsman.cs" />
+    <Compile Include="NPCs\Market\[30160] Stoneman.cs" />
+    <Compile Include="NPCs\Market\[5020] Weapon.cs" />
+    <Compile Include="NPCs\Market\[5018] Garment Tester.cs" />
+    <Compile Include="NPCs\Market\[30162] Carpenter.cs" />
+    <Compile Include="NPCs\Market\[3381] SurgeonMiracle.cs" />
+    <Compile Include="NPCs\Market\[35015] Etheral.cs" />
+    <Compile Include="NPCs\Market\[35016] WuxingOven.cs" />
+    <Compile Include="NPCs\Market\[390] LoveStone.cs" />
+    <Compile Include="NPCs\Market\[44] Warehouseman.cs" />
+    <Compile Include="NPCs\Market\[45] Conductress.cs" />
+    <Compile Include="NPCs\Market\[5004] MillionaireLee.cs" />
+    <Compile Include="NPCs\Market\[5015] MillionaireLeeGem.cs" />
+    <Compile Include="NPCs\Market\[5016] Garment.cs" />
+    <Compile Include="NPCs\Market\[7050] Artisan.cs" />
+    <Compile Include="NPCs\Market\[7374] ProficiencyGod.cs" />
+    <Compile Include="NPCs\NPCBase.cs" />
+    <Compile Include="NPCs\NPCHandler.cs" />
+    <Compile Include="NPCs\Other\Birth Village\[10004] VillageWiseGuy.cs" />
+    <Compile Include="NPCs\Other\Birth Village\[10005] Blacksmith.cs" />
+    <Compile Include="NPCs\Other\Birth Village\[10006] Warehouseman.cs" />
+    <Compile Include="NPCs\Other\Birth Village\[10007] Armorer.cs" />
+    <Compile Include="NPCs\Other\Birth Village\[10008] Pharmacist.cs" />
+    <Compile Include="NPCs\Other\Birth Village\[10010] Leave BV.cs" />
+    <Compile Include="NPCs\Other\Birth Village\[10055] TaoistStar.cs" />
+    <Compile Include="NPCs\Other\Birth Village\[1060] Guide.cs" />
+    <Compile Include="NPCs\Other\Birth Village\[425] OldGeneralYang.cs" />
+    <Compile Include="NPCs\Other\Global\Bosses Invitation.cs" />
+    <Compile Include="NPCs\Other\Global\Pole\[2110] PoleWarTC.cs" />
+    <Compile Include="NPCs\Other\Global\Pole\[2114] PoleWarBI.cs" />
+    <Compile Include="NPCs\Other\Global\Pole\[2111] PoleWarPC.cs" />
+    <Compile Include="NPCs\Other\Global\Pole\[2112] PoleWarAC.cs" />
+    <Compile Include="NPCs\Other\Global\Pole\[2115] PoleWarNpc.cs" />
+    <Compile Include="NPCs\Other\Global\Pole\[2113] PoleWarDC.cs" />
+    <Compile Include="NPCs\Other\Global\[13653] Force Vote.cs" />
+    <Compile Include="NPCs\Other\Global\[13654] PVPEvents.cs" />
+    <Compile Include="NPCs\Other\Global\[2054] RemoveFurniture.cs" />
+    <Compile Include="NPCs\Other\Global\[2090] DisCity Invitation.cs" />
+    <Compile Include="NPCs\Other\Global\[2091] Treasure Hunt Invite.cs" />
+    <Compile Include="NPCs\Other\Global\[2092] Terato Invite.cs" />
+    <Compile Include="NPCs\Other\Global\[2093] EXP Mob Invite.cs" />
+    <Compile Include="NPCs\Other\Global\[780000] VIP Card Mining.cs" />
+    <Compile Include="NPCs\Other\Global\[780001] VIP Card.cs" />
+    <Compile Include="NPCs\Other\Global\[780101] EraBoxNPCSilver.cs" />
+    <Compile Include="NPCs\Other\Global\[780102] EraBoxNPCGold.cs" />
+    <Compile Include="NPCs\Other\Global\[780103] EraBoxNPCBronz.cs" />
+    <Compile Include="NPCs\Other\World\[1000] Enter MZ.cs" />
+    <Compile Include="NPCs\Other\World\[1001] Leave MZ.cs" />
+    <Compile Include="NPCs\Other\World\[101602] Boxers.cs" />
+    <Compile Include="NPCs\Other\World\[12] VIP Warehouse.cs" />
+    <Compile Include="NPCs\Other\World\[159752] GuildConductor.cs" />
+    <Compile Include="NPCs\Other\World\[18810] Santa.cs" />
+    <Compile Include="NPCs\Other\World\[19002] Assistant - MetZone.cs" />
+    <Compile Include="NPCs\Other\World\[2009] Mike - SkyPass.cs" />
+    <Compile Include="NPCs\Other\World\[2010] Mike - Finish SkyPass.cs" />
+    <Compile Include="NPCs\Other\World\[2011] SkyPass Guardians.cs" />
+    <Compile Include="NPCs\Other\World\[2016] SkyPass.cs" />
+    <Compile Include="NPCs\Other\World\[2040] SpaceMark.cs" />
+    <Compile Include="NPCs\Other\World\[300007] ProfPKClerk.cs" />
+    <Compile Include="NPCs\Other\World\[4101] Warehouseman.cs" />
+    <Compile Include="NPCs\Other\World\[600075] BoxerHuang.cs" />
+    <Compile Include="NPCs\Other\World\[6720] CCGW Gates.cs" />
+    <Compile Include="NPCs\Other\World\[720650-720674] DemonBoxes.cs" />
+    <Compile Include="NPCs\Other\World\[7381] GWJail Warden.cs" />
+    <Compile Include="NPCs\Other\World\[7382] BotJail Warden.cs" />
+    <Compile Include="NPCs\Phoenix Castle\[10012] Warehouseman.cs" />
+    <Compile Include="NPCs\Phoenix Castle\[10052] Conductress.cs" />
+    <Compile Include="NPCs\Phoenix Castle\[1005] Assistant.cs" />
+    <Compile Include="NPCs\Phoenix Castle\[1612] OldMiner.cs" />
+    <Compile Include="NPCs\Phoenix Castle\[1613] BlueMouse.cs" />
+    <Compile Include="NPCs\Phoenix Castle\[19000] Norbert.cs" />
+    <Compile Include="NPCs\Phoenix Castle\[200000] Milly.cs" />
+    <Compile Include="NPCs\Phoenix Castle\[2021] OldManTang.cs" />
+    <Compile Include="NPCs\Phoenix Castle\[2026] BanditHead.cs" />
+    <Compile Include="NPCs\Promotion Center\[10000] TaoistGod.cs" />
+    <Compile Include="NPCs\Promotion Center\[10001] WarriorGod.cs" />
+    <Compile Include="NPCs\Promotion Center\[10022] TrojanGod.cs" />
+    <Compile Include="NPCs\Promotion Center\[35500] MightyTao.cs" />
+    <Compile Include="NPCs\Promotion Center\[400] ArcherGod.cs" />
+    <Compile Include="NPCs\Quests\Anniversary\[3002] Shirley.cs" />
+    <Compile Include="NPCs\Quests\Blessing Hunter\[87468] Blessing Hunter.cs" />
+    <Compile Include="NPCs\Quests\Blessing Hunter\[87469] Blessing Hunter - leave.cs" />
+    <Compile Include="NPCs\Quests\Christmas\[3000] Snowman.cs" />
+    <Compile Include="NPCs\Quests\Christmas\[3001] ConductorDarwen.cs" />
+    <Compile Include="NPCs\Quests\Christmas\[720151] CarolPage1.cs" />
+    <Compile Include="NPCs\Quests\Christmas\[720152] CarolPage2.cs" />
+    <Compile Include="NPCs\Quests\Christmas\[720153] CarolPage3.cs" />
+    <Compile Include="NPCs\Quests\Christmas\[720154] CarolPage4.cs" />
+    <Compile Include="NPCs\Quests\Christmas\[720155] CarolPage5.cs" />
+    <Compile Include="NPCs\Quests\Demon Exterminator\[2095] TCCaptain.cs" />
+    <Compile Include="NPCs\Quests\Demon Exterminator\[2096] PCCaptain.cs" />
+    <Compile Include="NPCs\Quests\Demon Exterminator\[2097] ACCaptain.cs" />
+    <Compile Include="NPCs\Quests\Demon Exterminator\[2098] DCCaptain.cs" />
+    <Compile Include="NPCs\Quests\Demon Exterminator\[2099] BICaptain.cs" />
+    <Compile Include="NPCs\Quests\Demon Exterminator\[2102] MCCaptain.cs" />
+    <Compile Include="NPCs\Quests\Easter\[2000] Commander - Easter Quest.cs" />
+    <Compile Include="NPCs\Quests\Easter\[2001] EasterEgg.cs" />
+    <Compile Include="NPCs\Quests\Easter\[6] EasterBuddy.cs" />
+    <Compile Include="NPCs\Quests\Easter\[7] Tracy - Easter Quest.cs" />
+    <Compile Include="NPCs\Quests\Egg\[189701] BlackMarket.cs" />
+    <Compile Include="NPCs\Quests\Egg\[189700] Egg.cs" />
+    <Compile Include="NPCs\Quests\Elements\[800021] Leave.cs" />
+    <Compile Include="NPCs\Quests\Elements\[800020] Leave Elemetns.cs" />
+    <Compile Include="NPCs\Quests\Flowers\[30021] Shirley.cs" />
+    <Compile Include="NPCs\Quests\Halloween\[2082-2089] Pumpkin.cs" />
+    <Compile Include="NPCs\Quests\Halloween\[5000] KingJack Halloween.cs" />
+    <Compile Include="NPCs\Quests\Halloween\[5001] Pumpkin Halloween NPC.cs" />
+    <Compile Include="NPCs\Quests\MoonBox\[800000] Fortuneteller.cs" />
+    <Compile Include="NPCs\Quests\MoonBox\[800001] Maggie.cs" />
+    <Compile Include="NPCs\Quests\MoonBox\[800002] Ghost.cs" />
+    <Compile Include="NPCs\Quests\MoonBox\[800009] GuardianGhost.cs" />
+    <Compile Include="NPCs\Quests\MoonBox\[800015] Guardian LifeTactic.cs" />
+    <Compile Include="NPCs\Quests\MoonBox\[800016] LonelyGhost.cs" />
+    <Compile Include="NPCs\Quests\[28810] Santa.cs" />
+    <Compile Include="NPCs\TCGuildWar\[3800] GuildController.cs" />
+    <Compile Include="NPCs\TCGuildWar\[67000] Pole.cs" />
+    <Compile Include="NPCs\TCGuildWar\[67001] LeftGate.cs" />
+    <Compile Include="NPCs\TCGuildWar\[67002] RightGate.cs" />
+    <Compile Include="NPCs\TCGuildWar\[70001] GuildController.cs" />
+    <Compile Include="NPCs\Tourny\[300015] TeamPK.cs" />
+    <Compile Include="NPCs\Twin City\Default\[10002] Barber.cs" />
+    <Compile Include="NPCs\Twin City\Default\[10003] GuildDirector.cs" />
+    <Compile Include="NPCs\Twin City\Default\[10021] ArenaGuard.cs" />
+    <Compile Include="NPCs\Twin City\Default\[10050] Conductress.cs" />
+    <Compile Include="NPCs\Twin City\Default\[10054] GeneralPeace.cs" />
+    <Compile Include="NPCs\Twin City\Default\[10063] Tinter.cs" />
+    <Compile Include="NPCs\Twin City\Default\[1061] WHGuardian.cs" />
+    <Compile Include="NPCs\Twin City\Default\[1152] Simon.cs" />
+    <Compile Include="NPCs\Twin City\Default\[1611] General Judd.cs" />
+    <Compile Include="NPCs\Twin City\Default\[2022] MoonPlatform.cs" />
+    <Compile Include="NPCs\Twin City\Default\[2058] Sunfer.cs" />
+    <Compile Include="NPCs\Twin City\Default\[300004] CouplesPKEnvoy.cs" />
+    <Compile Include="NPCs\Twin City\Default\[300006] ClassPKEnvoy.cs" />
+    <Compile Include="NPCs\Twin City\Default\[30157] HouseAgent.cs" />
+    <Compile Include="NPCs\Twin City\Default\[30161] FurnitureShop.cs" />
+    <Compile Include="NPCs\Twin City\Default\[380] GuildController.cs" />
+    <Compile Include="NPCs\Twin City\Default\[4293] Assistant.cs" />
+    <Compile Include="NPCs\Twin City\Default\[42] Warden.cs" />
+    <Compile Include="NPCs\Twin City\Default\[50000] Celestine.cs" />
+    <Compile Include="NPCs\Twin City\Default\[8] Warehouseman.cs" />
+    <Compile Include="NPCs\Twin City\[30020] LevelingNPC.cs" />
+    <Compile Include="NPCs\Twin City\[7150]socket spammer.cs" />
+    <Compile Include="NPCs\Twin City\[1003] GuruTodd.cs" />
+    <Compile Include="NPCs\Twin City\[1038] Event.cs" />
+    <Compile Include="NPCs\Twin City\[1007] Guide.cs" />
+    <Compile Include="NPCs\Twin City\[1622] GeneralBravery.cs" />
+    <Compile Include="NPCs\Twin City\[19003] TreasureBox.cs" />
+    <Compile Include="NPCs\Twin City\[2006] ObscureWarrior.cs" />
+    <Compile Include="NPCs\Twin City\[2024] General Qing.cs" />
+    <Compile Include="NPCs\Twin City\[2025] Food Carrier.cs" />
+    <Compile Include="NPCs\Twin City\[2027] Visitor.cs" />
+    <Compile Include="NPCs\Twin City\[2028] CTBFlag.cs" />
+    <Compile Include="NPCs\Twin City\[2057] Nina.cs" />
+    <Compile Include="NPCs\Twin City\[2055] Nina.cs" />
+    <Compile Include="NPCs\Twin City\[2080] MysticOldMan.cs" />
+    <Compile Include="NPCs\Twin City\[30165] EscortChief.cs" />
+    <Compile Include="NPCs\Twin City\[6666] ArtisanLuo.cs" />
+    <Compile Include="NPCs\Twin City\[6671] ClassicGod.cs" />
+    <Compile Include="PacketHandling\Attack.cs" />
+    <Compile Include="PacketHandling\CharacterMaking.cs" />
+    <Compile Include="PacketHandler.cs" />
+    <Compile Include="PacketHandling\Chat.cs" />
+    <Compile Include="PacketHandling\Compose.cs" />
+    <Compile Include="PacketHandling\CoolEff.cs" />
+    <Compile Include="PacketHandling\Craft.cs" />
+    <Compile Include="PacketHandling\CustomDialog.cs" />
+    <Compile Include="PacketHandling\Enchant.cs" />
+    <Compile Include="PacketHandling\Friends.cs" />
+    <Compile Include="PacketHandling\MemberList.cs" />
+    <Compile Include="PacketHandling\Guild.cs" />
+    <Compile Include="PacketHandling\GuildMembInfo.cs" />
+    <Compile Include="Main\ItemPacket\DBUpgrade.cs" />
+    <Compile Include="Main\ItemPacket\DropAnItem.cs" />
+    <Compile Include="Main\ItemPacket\DropMoney.cs" />
+    <Compile Include="Main\ItemPacket\Equip.cs" />
+    <Compile Include="Main\ItemPacket\MeteorUpgrade.cs" />
+    <Compile Include="Main\ItemPacket\Repair.cs" />
+    <Compile Include="Main\ItemPacket\Shops.cs" />
+    <Compile Include="PacketHandling\Jump.cs" />
+    <Compile Include="PacketHandling\Marriage.cs" />
+    <Compile Include="PacketHandling\MessageBoard.cs" />
+    <Compile Include="PacketHandling\PickItemUp.cs" />
+    <Compile Include="PacketHandling\Portal.cs" />
+    <Compile Include="PacketHandling\Revive.cs" />
+    <Compile Include="PacketHandling\SocketGem.cs" />
+    <Compile Include="PacketHandling\SocketTalisman.cs" />
+    <Compile Include="PacketHandling\Team.cs" />
+    <Compile Include="PacketHandling\Teleport.cs" />
+    <Compile Include="PacketHandling\Trade.cs" />
+    <Compile Include="PacketHandling\Traps - MapEffects.cs" />
+    <Compile Include="PacketHandling\WalkRun.cs" />
+    <Compile Include="PacketHandling\Warehouse.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScreenCapture.cs" />
+    <Compile Include="Structures\AttackMemorise.cs" />
+    <Compile Include="Structures\Banks.cs" />
+    <Compile Include="Structures\Buff.cs" />
+    <Compile Include="Structures\Equipment.cs" />
+    <Compile Include="Structures\EquipStats.cs" />
+    <Compile Include="Structures\Intensify.cs" />
+    <Compile Include="Structures\StatusEffect.cs" />
+    <Compile Include="Structures\Transformation.cs" />
+    <Compile Include="TopRankings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="NetFwTypeLib">
+      <Guid>{58FBCF7C-E7A9-467C-80B3-FC65E8FCCA08}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 ve x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 </ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

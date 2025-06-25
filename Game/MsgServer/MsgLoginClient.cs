@@ -10,6 +10,23 @@ namespace DeathWish.Game.MsgServer
     {
         public uint Key;
         public ulong AccountHash;
+
+        [PacketAttribute(Game.GamePackets.LoginGame)]
+        public unsafe static void LoginGame(Client.GameClient client, ServerSockets.Packet packet)
+        {
+            uint[] Decrypt = Program.transferCipher.Decrypt(new uint[] { packet.ReadUInt32(), packet.ReadUInt32() });
+
+            client.OnLogin = new MsgLoginClient()
+            {
+                Key = Decrypt[0],
+                AccountHash = Decrypt[1],
+
+            };
+
+            client.ClientFlag |= Client.ServerFlag.OnLoggion;
+            Database.ServerDatabase.LoginQueue.TryEnqueue(client);
+        }
+
         public unsafe static void LoginHandler(Client.GameClient client, MsgLoginClient packet)
         {
 
@@ -25,12 +42,6 @@ namespace DeathWish.Game.MsgServer
             try
             {
 
-                //NetShield
-                if (client.Newrole)
-                {
-                    uint encryptedIdentifier = client.OnLogin.Key;
-                    client.OnLogin.Key = Game.MsgLoader.CheatPacket.DecryptIdentifier(encryptedIdentifier, Game.MsgLoader.CheatPacket.keys);
-                }
                 if (client.OnLogin.Key > 100000000 || client.OnLogin.Key < 1000000)
                 {
                     using (var rec = new ServerSockets.RecycledPacket())
@@ -42,18 +53,7 @@ namespace DeathWish.Game.MsgServer
                     return;
                 }
 
-                //NetShield
-                var pool = Database.Server.GamePoll.Values.ToArray();
-                if (pool.Count(i => i.TqSerial == client.TqSerial) >= 5)
-                {
-                    using (var rec = new ServerSockets.RecycledPacket())
-                    {
-                        var stream = rec.GetStream();
-                        client.Send(new MsgServer.MsgMessage("You can not open more than 5 accounts.", "ALLUSERS", MsgMessage.MsgColor.red, MsgMessage.ChatMode.Dialog).GetArray(stream));
-                    }
-                    return;
-                }
-                //NetShield
+               
                 string BanMessaje;
                 if (Database.SystemBanned.IsBanned(client.Socket.RemoteIp, out BanMessaje))
                 {
@@ -104,8 +104,6 @@ namespace DeathWish.Game.MsgServer
                             MyConsole.WriteLine("-------------------------------------------------", ConsoleColor.Green);
                             MyConsole.WriteLine("Account: PlayerName > " + client.Player.Name + " < ", ConsoleColor.Yellow);
                             MyConsole.WriteLine("PlayerUID > " + client.Player.UID + " < ", ConsoleColor.Yellow);
-                            MyConsole.WriteLine("Version > " + client.Version + " < ", ConsoleColor.Yellow);
-                            MyConsole.WriteLine("ProSerial > " + client.TqSerial + " < ", ConsoleColor.Yellow);
                             MyConsole.WriteLine("Mac > " + client.Socket.GetMACAddress() + " < ", ConsoleColor.Yellow);
                             MyConsole.WriteLine("IP > " + client.Socket.RemoteIp + " < ", ConsoleColor.Yellow);
                             MyConsole.WriteLine("-------------------------------------------------", ConsoleColor.Green);
@@ -207,8 +205,6 @@ namespace DeathWish.Game.MsgServer
                                 MyConsole.WriteLine("-------------------------------------------------", ConsoleColor.Green);
                                 MyConsole.WriteLine("Account: PlayerName > " + client.Player.Name + " < ", ConsoleColor.Yellow);
                                 MyConsole.WriteLine("PlayerUID > " + client.Player.UID + " < ", ConsoleColor.Yellow);
-                                MyConsole.WriteLine("Version > " + client.Version + " < ", ConsoleColor.Yellow);
-                                MyConsole.WriteLine("ProSerial > " + client.TqSerial + " < ", ConsoleColor.Yellow);
                                 MyConsole.WriteLine("Mac > " + client.Socket.GetMACAddress() + " < ", ConsoleColor.Yellow);
                                 MyConsole.WriteLine("IP > " + client.Socket.RemoteIp + " < ", ConsoleColor.Yellow);
                                 MyConsole.WriteLine("-------------------------------------------------", ConsoleColor.Green);

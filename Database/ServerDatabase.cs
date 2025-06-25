@@ -224,7 +224,6 @@ namespace DeathWish.Database
                     {
                         write.Write<long>("Character", "ConquerPointsDropStamp", client.Player.ConquerPointsDropStamp.ToBinary());
                     }             
-                    write.Write<string>("Character", "MacAddress", client.PcLogin.MacAddress);
                     if (client.Player.WrongAnswers != null)
                     {
                         for (int x = 0; x < 5; x++)

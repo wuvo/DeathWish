@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NewestCOServer.PacketHandling
+{
+    public class GetGuildMembers
+    {
+        public static void Handle(Main.GameClient GC, byte[] Data)
+        {
+            if (GC.MyChar.MyGuild != null)
+            {
+                //(char)Length Level ON
+                string[] MembersStringArr = new string[256];
+                for (int i = 0; i < 256; i++)
+                    MembersStringArr[i] = "";
+                int Count = 0;
+                Hashtable CurHt = (Hashtable)GC.MyChar.MyGuild.Members[(byte)100];
+                foreach (Features.MemberInfo M in CurHt.Values)
+                {
+                    MembersStringArr[M.Level] += M.MemberString;
+                    Count++;
+                }
+                CurHt = (Hashtable)GC.MyChar.MyGuild.Members[(byte)90];
+                foreach (Features.MemberInfo M in CurHt.Values)
+                {
+                    MembersStringArr[M.Level] += M.MemberString;
+                    Count++;
+                }
+                CurHt = (Hashtable)GC.MyChar.MyGuild.Members[(byte)50];
+                foreach (Features.MemberInfo M in CurHt.Values)
+                {
+                    MembersStringArr[M.Level] += M.MemberString;
+                    Count++;
+                }
+                string MembersString = "";
+                for (int i = 255; i > 0; i--)
+                    if (MembersStringArr[i].Length > 0)
+                        MembersString += MembersStringArr[i];
+                GC.AddSend(Packets.StringGuild(GC.MyChar.MyGuild.GuildID, 11, MembersString, (byte)Count));
+            }
+        }
+    }
+}

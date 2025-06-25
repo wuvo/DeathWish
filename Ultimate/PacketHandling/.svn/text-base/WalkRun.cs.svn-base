@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NewestCOServer.PacketHandling
+{
+    public class WalkRun
+    {
+        public static void Handle(Main.GameClient GC, byte[] Data)
+        {
+            if (GC.MyChar.BuffOf(NewestCOServer.Features.SkillsClass.ExtraEffect.BlessPray).Eff == NewestCOServer.Features.SkillsClass.ExtraEffect.BlessPray)
+            GC.MyChar.RemoveBuff(GC.MyChar.BuffOf(Features.SkillsClass.ExtraEffect.BlessPray));
+            GC.MyChar.Mining = false;
+            GC.MyChar.AtkMem.Attacking = false;
+            GC.MyChar.Action = 100;
+            Game.World.Action(GC.MyChar, Data);
+            GC.MyChar.Direction = (byte)(Data[4] % 8);            
+            GC.MyChar.Loc.Walk((byte)(Data[4] % 8));            
+            Game.World.Spawns(GC.MyChar, true);
+        }
+    }
+}

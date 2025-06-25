@@ -1,0 +1,52 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NewestCOServer.PacketHandling
+{
+    public class Teleport
+    {
+        public static void Handle(Main.GameClient GC, byte[] Data)
+        {
+            if (!GC.LoginDataSent)
+            {
+                
+                GC.AddSend(Packets.Packet1012Time(GC.MyChar.EntityID));
+                GC.AddSend(Packets.GeneralData(GC.MyChar.Loc.Map, GC.MyChar.Loc.Map, GC.MyChar.Loc.X, GC.MyChar.Loc.Y, 0x4a));
+                GC.AddSend(Packets.GeneralData(GC.MyChar.EntityID, 0xffffffff, GC.MyChar.Loc.X, GC.MyChar.Loc.Y, 0x68));
+                if (GC.MyChar.Loc.Map == 1036)
+                    GC.AddSend(Packets.MapStatus(GC.MyChar.Loc.Map, 30));
+                else
+                    GC.AddSend(Packets.MapStatus(GC.MyChar.Loc.Map, 32));               
+                foreach (Game.Item I in GC.MyChar.Inventory)
+                    GC.AddSend(Packets.AddItem(I, 0));
+                GC.MyChar.Equips.Send(GC, true);
+
+                foreach (Game.Prof P in GC.MyChar.Profs.Values)
+                    GC.AddSend(Packets.Prof(P));
+                foreach (Game.Skill S in GC.MyChar.Skills.Values)
+                    GC.AddSend(Packets.Skill(S));
+                if (GC.MyChar.MyGuild != null)
+                {
+                    GC.AddSend(Packets.GuildInfo(GC.MyChar.MyGuild, GC.MyChar));
+                    GC.AddSend(Packets.String(GC.MyChar.MyGuild.GuildID, (byte)Game.StringType.GuildName, GC.MyChar.MyGuild.GuildName));
+                }
+                foreach (Features.Guild G in Features.Guilds.AllTheGuilds.Values)
+                    GC.AddSend(Packets.String(G.GuildID, (byte)Game.StringType.GuildName, G.GuildName));
+                GC.MyChar.PKPoints = GC.MyChar.PKPoints;
+                GC.MyChar.Nobility.Rank = GC.MyChar.Nobility.Rank;
+
+              /*  GC.LocalMessage(2000, "Welcome to Extream-CO!");
+                GC.LocalMessage(2000, "The server is still being fixed. Anyway, We want you to enjoy this server.");
+                GC.LocalMessage(2000, "If you want to revive here while being blessed, you have to type /rh or /revivehere.");
+                GC.LocalMessage(2000, "Also if somehow you died, you pressed the revive button, it dissapered and you didnt revive, type /forcerevive .");
+                GC.LocalMessage(2000, "Enjoy.");*/
+                if (Game.World.KOBoard[0].Name == GC.MyChar.Name)
+                    GC.LocalMessage(2000, "You are the 1st place on the KO board, you gain 2 times more exp than others.");
+                if (Game.World.CurrentBC.Message != null)
+                    GC.AddSend(Packets.ChatMessage(GC.MessageID, Game.World.CurrentBC.Name, "ALL", Game.World.CurrentBC.Message, 2500, 0));
+            }
+        }
+    }
+}

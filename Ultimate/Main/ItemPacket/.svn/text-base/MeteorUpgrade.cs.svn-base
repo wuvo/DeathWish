@@ -1,0 +1,77 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NewestCOServer.PacketHandling.ItemPacket
+{
+    public class MeteorUpgrade
+    {
+        public static void Handle(Main.GameClient GC, byte[] Data)
+        {
+            uint EquipUID = BitConverter.ToUInt32(Data, 4);
+            uint MeteorUID = BitConverter.ToUInt32(Data, 8);
+
+            Game.Item Equip = GC.MyChar.FindInvItem(EquipUID);
+            Game.Item Meteor = GC.MyChar.FindInvItem(MeteorUID);
+
+            if (Meteor.ID == 1088001)
+            {
+                Game.ItemIDManipulation E = new Game.ItemIDManipulation(Equip.ID);
+
+                sbyte Chance = (sbyte)(100 - (Equip.DBInfo.LevReq / 1.3));
+                byte Quality = (byte)E.Quality;
+
+                if (Quality < 6)
+                    Chance += 10;
+
+                E.IncreaseLevel();
+                DatabaseItem Di = (DatabaseItem)Database.DatabaseItems[E.ToID()];
+
+                byte NewLevel = Di.LevReq;
+                if (NewLevel > Equip.DBInfo.LevReq)
+                {
+                    if (MyMath.ChanceSuccess(Chance))
+                    {
+                        GC.MyChar.RemoveItem(Equip);
+                        Equip.ID = E.ToID();
+                        GC.MyChar.AddItem(Equip);
+                    }
+                if (!Chance.ToString().Contains('-'))
+                    GC.MyChar.RemoveItem(Meteor);
+                }
+            }
+            if (Meteor.ID == 1088002)
+            {
+                Game.ItemIDManipulation E = new Game.ItemIDManipulation(Equip.ID);
+
+                sbyte Chance = (sbyte)(100 - (Equip.DBInfo.LevReq / 1.3));
+                byte Quality = (byte)E.Quality;
+
+                if (Quality < 6)
+                    Chance += 10;
+                if (Quality == 7)
+                    Chance -= 5;
+                if (Quality == 8)
+                    Chance -= 20;
+                if (Quality == 9)
+                    Chance -= 30;
+
+                E.IncreaseLevel();
+                DatabaseItem Di = (DatabaseItem)Database.DatabaseItems[E.ToID()];
+                byte NewLevel = Di.LevReq;
+                if (NewLevel > Equip.DBInfo.LevReq)
+                {
+                    if (MyMath.ChanceSuccess(Chance))
+                    {
+                        GC.MyChar.RemoveItem(Equip);
+                        Equip.ID = E.ToID();
+                        GC.MyChar.AddItem(Equip);
+                    }
+                    if (!Chance.ToString().Contains('-'))
+                        GC.MyChar.RemoveItem(Meteor);
+                }
+            }
+        }
+    }
+}

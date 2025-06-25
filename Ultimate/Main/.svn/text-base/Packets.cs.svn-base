@@ -1,0 +1,1866 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NewestCOServer
+{
+    public unsafe class COPacket
+    {
+        byte[] PData;
+        public ushort PType;
+        int Count;
+
+        public byte* Ptr
+        {
+            get
+            {
+                fixed (byte* p = PData)
+                    return p;
+            }
+        }
+
+        public byte[] Get
+        {
+            get
+            {
+                return PData;
+            }
+        }
+        public ushort InLength
+        {
+            get
+            {
+                return *((ushort*)(Ptr));
+            }
+        }
+        public ushort Type
+        {
+            get
+            {
+                return *((ushort*)(Ptr + 2));
+            }
+        }
+        public unsafe COPacket(byte[] Data)
+        {
+            Count = 0;
+            PData = Data;
+        }
+        public unsafe void WriteByte(byte val)
+        {
+            *((byte*)(Ptr + Count)) = val;
+            Count++;
+        }
+        public unsafe void WriteInt16(ushort val)
+        {
+            *((ushort*)(Ptr + Count)) = val;
+            Count += 2;
+        }
+        public unsafe void WriteInt32(uint val)
+        {
+            *((uint*)(Ptr + Count)) = val;
+            Count += 4;
+        }
+        public unsafe void WriteInt64(ulong val)
+        {
+            *((ulong*)(Ptr + Count)) = val;
+            Count += 8;
+        }
+        public unsafe void WriteString(string val)
+        {
+            for (int i = 0; i < val.Length; i++)
+            {
+                try
+                {
+                    *((byte*)(Ptr + Count)) = Convert.ToByte(val[i]);
+                }
+                catch { }//For weird letters that cannot be converted into byte...
+                Count++;
+            }
+        }
+        public unsafe void WriteString(string val, int MaxLength)
+        {
+            if (val.Length <= MaxLength)
+                for (int i = 0; i < val.Length; i++)
+                {
+                    *((byte*)(Ptr + Count)) = Convert.ToByte(val[i]);
+                    Count++;
+                }
+            else
+                for (int i = 0; i < MaxLength; i++)
+                {
+                    *((byte*)(Ptr + Count)) = Convert.ToByte(val[i]);
+                    Count++;
+                }
+        }
+        public unsafe void WriteBytes(byte[] val)
+        {
+            for (int i = 0; i < val.Length; i++)
+            {
+                *((byte*)(Ptr + Count)) = val[i];
+                Count++;
+            }
+        }
+        public void Move(int count)
+        {
+            Count += count;
+        }
+    }
+    public class COPacket2
+    {
+        byte[] buf;
+        int pos;
+        public COPacket2(byte[] _start) { buf = _start; }
+        public bool WriteUInt16(int value)
+        {
+            try
+            {
+                buf[pos] = (byte)(value); pos++;
+                buf[pos] = (byte)(value >> 8); pos++;
+                return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteUInt32(uint value)
+        {
+            try
+            {
+                buf[pos] = (byte)(value); pos++;
+                buf[pos] = (byte)(value >> 8); pos++;
+                buf[pos] = (byte)(value >> 16); pos++;
+                buf[pos] = (byte)(value >> 24); pos++; return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteUInt64(ulong value)
+        {
+            try
+            {
+                buf[pos] = (byte)(value); pos++;
+                buf[pos] = (byte)(value >> 8); pos++;
+                buf[pos] = (byte)(value >> 16); pos++;
+                buf[pos] = (byte)(value >> 24); pos++;
+                buf[pos] = (byte)(value >> 32); pos++;
+                buf[pos] = (byte)(value >> 40); pos++;
+                buf[pos] = (byte)(value >> 48); pos++;
+                buf[pos] = (byte)(value >> 56); pos++;
+                return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteByte(byte value)
+        {
+            try
+            {
+                buf[pos] = (byte)(value); pos++;
+                return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteStringWithLength(string value)
+        {
+            try
+            {
+                buf[pos] = (byte)value.Length;
+                pos++;
+                ushort i = 0;
+                while (i < value.Length)
+                {
+                    buf[(ushort)(i + pos)] = (byte)value[i];
+                    i = (ushort)(i + 1);
+                }
+                pos += i;
+                return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteString(string value)
+        {
+            try
+            {
+                ushort i = 0;
+                while (i < value.Length)
+                {
+                    buf[(ushort)(i + pos)] = (byte)value[i];
+                    i = (ushort)(i + 1);
+                }
+                pos += i;
+                return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteUInt16(ushort value, int offset)
+        {
+            try
+            {
+                buf[offset] = (byte)(value);
+                buf[offset + 1] = (byte)(value >> 8);
+                return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteUInt32(uint value, int offset)
+        {
+            try
+            {
+                buf[offset] = (byte)(value); pos++;
+                buf[offset + 1] = (byte)(value >> 8); pos++;
+                buf[offset + 2] = (byte)(value >> 16); pos++;
+                buf[offset + 3] = (byte)(value >> 24); pos++; return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteUInt64(ulong value, int offset)
+        {
+            try
+            {
+                buf[offset] = (byte)(value);
+                buf[offset + 1] = (byte)(value >> 8);
+                buf[offset + 2] = (byte)(value >> 16);
+                buf[offset + 3] = (byte)(value >> 24);
+                buf[offset + 4] = (byte)(value >> 32);
+                buf[offset + 5] = (byte)(value >> 40);
+                buf[offset + 6] = (byte)(value >> 48);
+                buf[offset + 7] = (byte)(value >> 56);
+                return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteByte(byte value, int offset)
+        {
+            try
+            {
+                buf[offset] = (byte)(value);
+                return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteStringWithLength(string value, int offset)
+        {
+            try
+            {
+                buf[offset] = (byte)value.Length;
+                offset++;
+                ushort i = 0;
+                while (i < value.Length)
+                {
+                    buf[(ushort)(i + offset)] = (byte)value[i];
+                    i = (ushort)(i + 1);
+                }
+                return true;
+            }
+            catch { return false; }
+        }
+        public bool WriteString(string value, int offset)
+        {
+            try
+            {
+                ushort i = 0;
+                while (i < value.Length)
+                {
+                    buf[(ushort)(i + offset)] = (byte)value[i];
+                    i = (ushort)(i + 1);
+                }
+                return true;
+            }
+            catch { return false; }
+        }
+        public bool StepOver(int length)
+        {
+            pos += length;
+            return true;
+        }
+        public int Position
+        {
+            get { return pos; }
+        }
+        public byte[] Packet
+        {
+            get { return buf; }
+        }
+        public bool WriteTQServer()
+        {
+            pos = buf.Length - 8;
+            WriteString("TQServer");
+            return true;
+        }
+    }
+    public class Packets
+    {
+        public static COPacket Donators(Game.Character C)
+        {
+            string str = C.EntityID.ToString() + " " + C.Nobility.Donation.ToString() + " " + ((byte)C.Nobility.Rank).ToString() + " " + C.Nobility.ListPlace.ToString();
+            byte[] Packet = new byte[8 + 33 + str.Length];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)2064);
+            P.WriteInt32(3);
+            P.WriteInt32(C.EntityID);
+            P.Move(16);
+            P.WriteByte(1);
+            P.WriteByte((byte)str.Length);
+            P.WriteString(str);
+            return P;
+        }
+        public static COPacket DonateOpen(Game.Character C)
+        {
+            byte[] Packet = new byte[32 + 8];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));//length
+            P.WriteInt16(2064);
+            P.WriteInt32(4);            
+            P.WriteInt32(12);
+
+            return P;
+        }
+        public static COPacket DonateOpen2(Game.Character C)
+        {
+            byte[] Packet = new byte[32 + 8];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));//length
+            P.WriteInt16(2064);
+            P.WriteInt32(4);
+            if (C.Nobility.Rank < Game.Ranks.Duke)
+                P.WriteInt32((uint)(Game.World.EmpireBoard[49].Donation + 1));
+            else
+            {
+                if (C.Nobility.Rank == NewestCOServer.Game.Ranks.Duke)
+                    P.WriteInt32((uint)(Game.World.EmpireBoard[15].Donation + 1));
+                else if (C.Nobility.Rank == NewestCOServer.Game.Ranks.Prince)
+                    P.WriteInt32((uint)(Game.World.EmpireBoard[3].Donation + 1));
+                else
+                    P.WriteInt32(0);
+            }
+            P.Move(8);
+            P.WriteInt32(60);
+            P.WriteInt32(uint.MaxValue);
+
+            return P;
+        }
+        public static COPacket SendTopDonaters(uint Page)
+        {
+            string Str = "";
+            for (int i = (int)(Page * 10); i < Page * 10 + 10; i++)
+            {
+                if (Game.World.EmpireBoard[i].Donation != 0)
+                {
+                    int PotGet = 7;
+                    if (i < 15) PotGet = 9;
+                    if (i < 3) PotGet = 12;
+ 
+                    string nStr = Game.World.EmpireBoard[i].ID + " 0 0 " + Game.World.EmpireBoard[i].Name + " " + Game.World.EmpireBoard[i].Donation + " " + PotGet + " " + i;
+                    nStr = Convert.ToChar((byte)nStr.Length) + nStr;
+                    Str += nStr;
+                }
+            }
+            byte[] Packet = new byte[32 + Str.Length + 8];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));//length
+            P.WriteInt16(2064);
+            P.WriteInt32(2);
+            P.WriteInt16((ushort)Page);
+            P.WriteInt32(5);
+            P.Move(14);
+            P.WriteByte(10);
+            P.WriteString(Str);
+            P.Move(3);
+
+            return P;
+        }
+        public static COPacket QuizShowStart(ushort qCount)
+        {
+            byte[] Packet = new byte[20 + 8];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16(20);
+            P.WriteInt16(2068);
+            P.WriteInt16(1);//quiztype
+            P.WriteInt16(31);//countdown
+            P.WriteInt16(qCount);//questioncount
+            P.WriteInt16(30);//questiontime
+            P.WriteInt16(1800);//1st prize
+            P.WriteInt16(1200);//2nd prize
+            P.WriteInt16(600);//3rdprize
+            return P;
+        }
+        public static COPacket QuizQuestion(uint currentscore, ushort timetaken, ushort prize, ushort rlq, ushort qn, string question, string answer1, string answer2, string answer3, string answer4)
+        {
+            byte[] packet = new byte[19 + question.Length + 1 + answer1.Length + 1 + answer2.Length + 1 + answer3.Length + 1 + answer4.Length + 1 + 8];
+            COPacket Packet = new COPacket(packet);
+            Packet.WriteInt16((ushort)(packet.Length - 8));//length
+            Packet.WriteInt16(2068);//packettype
+            Packet.WriteInt16(2);//quiztype
+            Packet.WriteInt16(qn);//questionid
+            Packet.WriteInt16(0);//last question right answer
+            Packet.WriteInt16(prize);//prize so far
+            Packet.WriteInt16(timetaken);//time taken so far
+            Packet.WriteInt32(currentscore);//current score
+            Packet.WriteByte(5);
+            char length = (char)question.Length;
+            Packet.WriteString(length.ToString());
+            Packet.WriteString(question);
+            Packet.WriteByte((byte)answer1.Length);
+            Packet.WriteString(answer1);
+            Packet.WriteByte((byte)answer2.Length);
+            Packet.WriteString(answer2);
+            Packet.WriteByte((byte)answer3.Length);
+            Packet.WriteString(answer3);
+            Packet.WriteByte((byte)answer4.Length);
+            Packet.WriteString(answer4);
+            return Packet;
+        }
+        public static COPacket QuizShowInfo(ushort score, ushort timetaken, ushort rank)
+        {
+            int llenght = 0;
+            for (int x = 0; x < 3; x++)
+            {
+                int length = Program.MainQuizShowInfo.Name[x].Length + 1 + Program.MainQuizShowInfo.Score[x].ToString().Length + 1 + Program.MainQuizShowInfo.Time[x].ToString().Length;
+                llenght += length;
+            }
+            byte[] packet = new byte[22 + llenght + 8];
+            COPacket Packet = new COPacket(packet);
+            Packet.WriteInt16((ushort)(packet.Length - 8));//length
+            Packet.WriteInt16(2068);//packettype
+            Packet.WriteInt16(4);//quiztype
+            Packet.WriteInt16(score);//doesntwork
+            Packet.WriteInt16(timetaken);//doesntwork
+            Packet.WriteInt16(rank);//doesnt work.
+            Packet.WriteInt32(0);//unknown
+            Packet.WriteInt16(0);//unknown
+            Packet.WriteByte(3);//leaders
+            for (int x = 0; x < 3; x++)
+            {
+                int length = Program.MainQuizShowInfo.Name[x].Length + 1 + Program.MainQuizShowInfo.Score[x].ToString().Length + 1 + Program.MainQuizShowInfo.Time[x].ToString().Length;
+                Packet.WriteByte((byte)length);
+                Packet.WriteString(Program.MainQuizShowInfo.Name[x]);
+                Packet.WriteByte(0x20);
+                Packet.WriteString(Program.MainQuizShowInfo.Score[x].ToString());
+                Packet.WriteByte(0x20);
+                Packet.WriteString(Program.MainQuizShowInfo.Time[x].ToString());
+            }
+            return Packet;
+        }
+        public static COPacket QuizShowEnd(string Name, ushort score, ushort time, ushort rank, ushort prize)
+        {
+            int length = Name.Length + 1 + score.ToString().Length + 1 + time.ToString().Length;
+            byte[] packet = new byte[20 + length + 8];
+            COPacket Packet = new COPacket(packet);
+            Packet.WriteInt16((ushort)(20 + length));//length
+            Packet.WriteInt16(2068);//packettype
+            Packet.WriteInt16(5);//quiztype
+            Packet.WriteInt16(rank);//rank
+            Packet.WriteInt16(prize);//0
+            Packet.WriteInt16(time);//time
+            Packet.WriteInt16(score);//score
+            Packet.WriteInt32(0);
+            Packet.WriteByte(1);
+            Packet.WriteByte((byte)length);
+            Packet.WriteString(Name);//history name
+            Packet.WriteByte(0x20);
+            Packet.WriteString(score.ToString());//history score
+            Packet.WriteByte(0x20);
+            Packet.WriteString(time.ToString());//history time
+            return Packet;
+        }
+        public static COPacket AddStallItem(Game.Item I, Features.PersonalShops.ItemValue Val, uint StallID)
+        {
+            byte[] Packet = new byte[8 + 56];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x454);            
+            P.WriteInt32(I.UID);
+            P.WriteInt32(StallID);
+            P.WriteInt32(Val.Value);
+            P.WriteInt32(I.ID);
+            P.WriteInt16(I.CurDur);
+            P.WriteInt16(I.MaxDur);
+            P.WriteInt32(Val.MoneyType);
+            P.WriteInt32(0);
+            P.WriteInt16((byte)I.Soc1);
+            P.WriteInt16((byte)I.Soc2);
+            P.WriteByte(I.Plus);
+            P.WriteInt16(I.Bless);
+            P.WriteByte(I.Enchant);
+            P.WriteInt32(I.TalismanProgress);
+            P.Move(4);
+            P.WriteInt32((uint)I.Color);
+            P.WriteInt32(I.Progress);
+
+            return P;
+        }
+        public static COPacket MapStatus(ushort Map, uint Status)
+        {
+            byte[] Packet = new byte[8 + 16];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x456);
+            P.WriteInt32(Map);
+            P.WriteInt32(Map);
+            P.WriteInt32(Status);
+
+            return P;
+        }
+        public static COPacket FriendEnemyInfo(Game.Character C, byte Enemy)
+        {
+            int Leng = (16 - C.Spouse.Length);
+            byte[] Packet = new byte[8 + 40];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x7f1);
+            P.WriteInt32(C.EntityID);
+            P.WriteInt32(uint.Parse(C.Avatar.ToString() + C.Body.ToString()));
+            P.WriteByte(C.Level);
+            P.WriteByte(C.Job);
+            P.WriteInt16(C.PKPoints);
+            if (C.MyGuild != null)
+                P.WriteInt16(C.MyGuild.GuildID);
+            else
+                P.Move(2);
+
+            P.WriteByte(0);
+            P.WriteByte((byte)(C.GuildRank));
+            P.WriteString(C.Spouse);
+            for (int i = 0; i < Leng; i++)
+            {
+                P.WriteByte(0);
+            }
+            P.WriteInt32(Enemy);
+
+            return P;
+        }
+        public static COPacket MentorApprenticePacket(uint adder, uint uid, string name, byte Mode, byte Online)
+        {
+            byte[] Packet = new byte[8 + 24 + 16];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)2065);
+            P.WriteInt32(Mode);
+            P.WriteInt32(adder);
+            P.WriteInt32(uid);
+            P.WriteInt32(Online);
+            P.WriteInt32(1);
+            P.WriteString(name);
+
+            return P;
+        }
+        public static COPacket FriendEnemyPacket(uint uid, string name, byte Mode, byte Online)
+        {
+            byte[] Packet = new byte[8 + 36];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3fb);
+            P.WriteInt32(uid);
+            P.WriteByte(Mode);
+            P.WriteByte(Online);
+            P.Move(2);
+            P.Move(4);
+            P.WriteInt32(1);
+            P.WriteString(name);
+
+            return P;
+        }
+        public static COPacket TradePacket(uint UID, byte Type)
+        {
+            byte[] Packet = new byte[8 + 12];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x420);
+            P.WriteInt32(UID);
+            P.WriteInt32(Type);
+
+            return P;
+        }
+        public static COPacket TradeItem(Game.Item I)
+        {
+            byte[] Packet = new byte[8 + 48];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3f0);
+            P.WriteInt32(I.UID);
+            P.WriteInt32(I.ID);
+            P.WriteInt16(I.CurDur);
+            P.WriteInt16(I.MaxDur);
+            P.WriteInt16(2);
+            P.WriteInt16(0);
+            P.WriteInt32(I.TalismanProgress);
+            P.Move(2);            
+            P.WriteByte((byte)I.Soc1);
+            P.WriteByte((byte)I.Soc2);
+            P.WriteInt16((ushort)I.Effect);
+            P.WriteByte(I.Plus);
+            P.WriteByte(I.Bless);
+            if (I.FreeItem)
+                P.WriteByte(1);
+            else
+                P.WriteByte(0);
+            P.WriteByte(I.Enchant);
+            P.Move(6);
+            if (I.Locked)            
+                P.WriteInt16(3);            
+            else P.WriteInt16(0);
+            P.WriteInt32((uint)I.Color);
+
+            P.WriteInt32(I.Progress);
+
+            return P;
+        }
+        public static COPacket AddWHItem(Game.Character C, ushort NPC, Game.Item I)
+        {
+            byte[] Packet = new byte[8 + 32];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x44e);
+            P.WriteInt32(NPC);
+            P.Move(4);
+            P.WriteInt32(1);
+            if (I.ID != 0)
+            {
+                P.WriteInt32(I.UID);
+                P.WriteInt32(I.ID);
+                P.Move(1);
+                P.WriteByte((byte)I.Soc1);
+                P.WriteByte((byte)I.Soc2);
+                P.WriteInt16((ushort)I.Effect);
+                P.WriteByte(I.Plus);
+                P.WriteByte(I.Bless);
+                if (I.FreeItem)
+                    P.WriteByte(1);
+                else P.Move(1);
+                P.WriteByte(I.Enchant);
+                P.WriteByte(0);
+                P.WriteByte(0);
+                P.WriteByte(0);
+                P.WriteByte(0);
+                P.WriteByte(0);
+                P.WriteByte(0);
+                P.WriteInt32((uint)I.Color);
+            }
+            return P;
+        }
+        public static COPacket RemoveWHItem(Game.Character C, ushort NPC, Game.Item I)
+        {
+            byte[] Packet = new byte[48 + 8];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x44e);
+            P.WriteInt32(NPC);
+            P.WriteInt32(2);
+            P.WriteInt32(I.UID);
+            P.Move(32);
+            return P;
+        }
+        public static COPacket SendWarehouse(Game.Character C, ushort NPC)
+        {
+            ArrayList Warehouse = null;
+            switch (NPC)
+            {
+                case 8: { Warehouse = C.Warehouses.TCWarehouse; break; }
+                case 10012: { Warehouse = C.Warehouses.PCWarehouse; break; }
+                case 10028: { Warehouse = C.Warehouses.ACWarehouse; break; }
+                case 10011: { Warehouse = C.Warehouses.DCWarehouse; break; }
+                case 10027: { Warehouse = C.Warehouses.BIWarehouse; break; }
+                case 44: { Warehouse = C.Warehouses.MAWarehouse; break; }
+                case 4101: { Warehouse = C.Warehouses.SCWarehouse; break; }
+                default: return new COPacket(new byte[0]);
+            }
+            byte[] Packet = new byte[8 + 16 + (32 * Warehouse.Count)];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x44e);
+            P.WriteInt32(NPC);
+            P.Move(4);
+            P.WriteInt32((uint)Warehouse.Count);
+            foreach (Game.Item I in Warehouse)
+            {
+                if (I.ID != 0)
+                {
+                    P.WriteInt32(I.UID);
+                    P.WriteInt32(I.ID);
+                    P.Move(1);
+                    P.WriteByte((byte)I.Soc1);
+                    P.WriteByte((byte)I.Soc2);
+                    P.WriteInt16((ushort)I.Effect);
+                    P.WriteByte(I.Plus);
+                    P.WriteByte(I.Bless);
+                    if (I.FreeItem)
+                        P.WriteByte(1);
+                    else P.Move(1);
+                    P.WriteByte(I.Enchant);
+                    P.WriteByte(0);
+                    P.WriteByte(0);
+                    P.WriteByte(0);
+                    P.WriteByte(0);
+                    P.WriteByte(0);
+                    P.WriteByte(0);
+                    P.WriteInt32((uint)I.Color);
+                    P.Move(5);
+                }
+            }
+            return P;
+        }
+        public static COPacket OpenWarehouse(ushort NPCID, uint Money)
+        {
+            byte[] Packet = new byte[8 + 20];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3f1);
+            P.WriteInt32(NPCID);
+            P.WriteInt32(Money);
+            P.WriteInt32(0x09);
+            P.WriteInt32((uint)Environment.TickCount);
+
+            return P;
+        }        
+        public static COPacket NPCSay(string Text)
+        {
+            byte[] Packet = new byte[8 + 17 + Text.Length];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x7f0);
+            P.Move(6);
+            P.WriteByte(0xff);
+            P.WriteByte(0x01);
+            P.WriteByte(0x01);
+            P.WriteByte((byte)Text.Length);
+            P.WriteString(Text);
+            P.Move(3);
+
+            return P;
+        }
+        public static COPacket NPCLink(string Text, byte DialNr)
+        {
+            byte[] Packet = new byte[8 + 17 + Text.Length];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x7f0);
+            P.Move(6);
+            P.WriteByte(DialNr);
+            P.WriteByte(0x02);
+            P.WriteByte(0x01);
+            P.WriteByte((byte)Text.Length);
+            P.WriteString(Text);
+            P.Move(3);
+
+            return P;
+        }
+        public static COPacket NPCLink2(string Text, byte DialNr)
+        {
+            byte[] Packet = new byte[8 + 17 + Text.Length];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x7f0);
+            P.Move(6);
+            P.WriteByte(DialNr);
+            P.WriteByte(0x03);
+            P.WriteByte(0x01);
+            P.WriteByte((byte)Text.Length);
+            P.WriteString(Text);
+            P.Move(3);
+
+            return P;
+        }
+        public static COPacket NPCSetFace(ushort Face)
+        {
+            byte[] Packet = new byte[8 + 16];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x7f0);
+            P.WriteInt16(0x0a);
+            P.WriteInt16(0x0a);
+            P.WriteInt16(Face);
+            P.WriteByte(0xff);
+            P.WriteByte(0x04);
+            P.Move(4);
+
+            return P;
+        }
+        public static COPacket NPCFinish()
+        {
+            byte[] Packet = new byte[8 + 16];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x7f0);
+            P.Move(6);
+            P.WriteByte(0xff);
+            P.WriteByte(0x64);
+            P.Move(4);
+
+            return P;
+        }
+        public static COPacket ViewEquip(Game.Character C)
+        {
+            byte[] Packet = new byte[8 + 11 + "None".Length];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3f7);
+            P.WriteInt32(C.EntityID);
+            P.WriteByte(0x0a);
+            P.WriteByte(0x01);
+            P.WriteByte((byte)("None".Length));
+            P.WriteString("None");
+
+            return P;
+        }
+        public static COPacket AddViewItem(uint Viewed, Game.Item I, byte Pos)
+        {
+            byte[] Packet = new byte[56];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3f0);
+            P.WriteInt32(Viewed);
+            P.WriteInt32(I.ID);
+            P.WriteInt16(I.CurDur);
+            P.WriteInt16(I.MaxDur);
+            P.WriteInt16(4);
+            P.WriteInt16(Pos);
+            P.WriteInt32(I.TalismanProgress);
+            P.WriteByte((byte)I.Soc1);
+            P.WriteByte((byte)I.Soc2);
+            P.Move(2);
+            P.WriteByte(I.Plus);
+            P.WriteByte(I.Bless);
+            if (I.FreeItem)
+                P.WriteByte(1);
+            else
+                P.WriteByte(0);
+            P.WriteByte(I.Enchant);
+            P.Move(6);
+            if (I.Locked)
+            {
+                P.WriteInt16(3);
+            }
+            else P.WriteInt16(0);
+            P.WriteInt32(3);
+
+            P.WriteInt32(I.Progress);
+            return P;
+        }
+        public static COPacket SpawnNamedNPC(Game.NPC NPC, string Name)
+        {
+            byte[] Packet = new byte[8 + 36 + Name.Length];
+
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x455);
+            P.WriteInt32(NPC.EntityID);
+            P.Move(8);
+            P.WriteInt16(NPC.Loc.X);
+            P.WriteInt16(NPC.Loc.Y);
+            P.WriteInt16((ushort)(NPC.Type + NPC.Direction));
+            P.WriteInt16(NPC.Flags);
+            P.WriteInt16(0);
+            P.WriteByte(1);
+            P.WriteByte((byte)Name.Length);
+            P.WriteString(Name);
+
+            return P;
+        }
+        public static COPacket SpawnNPCWithHP(uint EntityID, ushort Type, ushort Flags, Game.Location Loc, uint CurHP, uint MaxHP)
+        {
+            byte[] Packet = new byte[8 + 34];
+
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)1109);
+            P.WriteInt32(EntityID);            
+            P.WriteInt32(MaxHP);
+            P.WriteInt32(CurHP);
+            P.WriteInt16(Loc.X);
+            P.WriteInt16(Loc.Y);
+            P.WriteInt16((ushort)Type);
+            P.WriteInt16(Flags);
+            P.WriteInt16(10);
+
+            return P;
+        }
+        public static COPacket SpawnNPCWithHP(uint EntityID, ushort Type, ushort Flags, Game.Location Loc, bool Named, string Name, uint CurHP, uint MaxHP)
+        {
+            byte[] Packet = new byte[8 + 36 + Name.Length];
+
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)1109);
+            P.WriteInt32(EntityID);
+            P.WriteInt32(MaxHP);
+            P.WriteInt32(CurHP);
+            P.WriteInt16(Loc.X);
+            P.WriteInt16(Loc.Y);
+            P.WriteInt16((ushort)Type);
+            P.WriteInt16(Flags);
+            P.WriteInt16(11);
+            if (Named)
+            {
+                P.WriteByte(1);
+                P.WriteByte((byte)Name.Length);
+                P.WriteString(Name);
+            }
+
+            return P;
+        }
+        public static COPacket SpawnNPCWithHP(Game.NPC NPC)
+        {
+            byte[] Packet = new byte[8 + 34];
+
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x455);
+            P.WriteInt32(NPC.EntityID);
+            P.WriteInt32(NPC.MaxHP);
+            P.WriteInt32(NPC.CurHP);
+            P.WriteInt16(NPC.Loc.X);
+            P.WriteInt16(NPC.Loc.Y);
+            P.WriteInt16((ushort)(NPC.Type + NPC.Direction));
+            P.WriteInt16(NPC.Flags);
+            P.WriteInt16(0);
+
+            return P;
+        }
+        public static COPacket SpawnNamedNPC2(Game.NPC NPC, string Name)
+        {
+            byte[] Packet = new byte[8 + 20 + Name.Length];
+
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x7ee);
+            P.WriteInt32(NPC.EntityID);
+            P.WriteInt16(NPC.Loc.X);
+            P.WriteInt16(NPC.Loc.Y);
+            P.WriteInt16((ushort)(NPC.Type + NPC.Direction));
+            P.WriteInt32(NPC.Flags);
+            P.WriteByte(1);
+            P.WriteByte((byte)Name.Length);
+            P.WriteString(Name);
+
+            return P;
+        }
+        public static COPacket SpawnNPC(Game.NPC N)
+        {
+            byte[] Packet = new byte[8 + 28];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x7ee);
+            P.WriteInt32(N.EntityID);
+            P.WriteInt16(N.Loc.X);
+            P.WriteInt16(N.Loc.Y);
+            P.WriteInt16((ushort)(N.Type + N.Direction));
+            P.WriteInt16(N.Flags);
+            P.WriteInt32(1);
+
+            return P;
+        }
+        public static COPacket ItemDrop(Game.DroppedItem I)
+        {
+            byte[] Packet = new byte[8 + 20];
+            COPacket P = new COPacket(Packet);            
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x44d);
+            P.WriteInt32(I.UID);
+            P.WriteInt32(I.Info.ID);
+            P.WriteInt16(I.Loc.X);
+            P.WriteInt16(I.Loc.Y);
+            P.WriteInt16(0x03);
+            P.WriteInt16(0x01);
+
+            return P;
+        }
+        public static COPacket ItemDropRemove(uint ItemUID, uint ItemID, ushort X, ushort Y)
+        {
+            byte[] Packet = new byte[8 + 20];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x44d);
+            P.WriteInt32(ItemUID);
+            P.WriteInt32(ItemID);
+            P.WriteInt16(X);
+            P.WriteInt16(Y);
+            P.WriteInt16(0x03);
+            P.WriteInt16(0x02);
+
+            return P;
+        }
+        public static COPacket TeamPacket(uint CharID, byte Mode)
+        {
+            byte[] Packet = new byte[8 + 12];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3ff);
+            P.WriteInt32(Mode);
+            P.WriteInt32(CharID);
+
+            return P;
+        }
+        public static COPacket PlayerJoinsTeam(Game.Character C)
+        {
+            byte[] Packet = new byte[8 + 36];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x402);
+            P.WriteByte(0);
+            P.WriteByte(1);
+            P.WriteByte(1);
+            P.WriteByte(1);
+            P.WriteString((C.Name + C.MyClient.AuthInfo.Status));
+            P.Move(16 - (C.Name + C.MyClient.AuthInfo.Status).Length);
+            P.WriteInt32(C.EntityID);
+            P.WriteInt32(uint.Parse(C.Avatar.ToString() + C.Body.ToString()));
+            P.WriteInt16((ushort)C.CurHP);
+            P.WriteInt16((ushort)C.MaxHP);            
+
+            return P;
+        }        
+        public static COPacket SkillUse(uint EntityID, uint Target, uint Damage, ushort SkillId, byte SkillLvl, ushort X, ushort Y)
+        {
+            byte[] Packet = new byte[8 + 28];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x451);
+            P.WriteInt32(EntityID);
+            P.WriteInt16(X);
+            P.WriteInt16(Y);
+            P.WriteInt16(SkillId);
+            P.WriteInt16(SkillLvl);
+            P.WriteInt32(1);
+            P.WriteInt32(Target);
+            P.WriteInt32(Damage);
+           
+
+            return P;
+        }
+        
+        public static COPacket SkillUse(Features.SkillsClass.SkillUse SU)
+        {
+            byte[] Packet = new byte[8 + 20 + (SU.MobTargets.Count + SU.PlayerTargets.Count + SU.NPCTargets.Count + SU.MiscTargets.Count) * 12];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x451);
+            P.WriteInt32(SU.User.EntityID);
+            P.WriteInt16(SU.AimX);
+            P.WriteInt16(SU.AimY);
+            P.WriteInt16(SU.Info.ID);
+            P.WriteInt16(SU.Info.Level);
+            P.WriteInt32((uint)(SU.MobTargets.Count + SU.PlayerTargets.Count + SU.NPCTargets.Count + SU.MiscTargets.Count));
+            foreach (DictionaryEntry DE in SU.MobTargets)
+            {
+                P.WriteInt32(((Game.Mob)DE.Key).EntityID);
+                P.WriteInt32((uint)DE.Value);
+                P.Move(4);
+            }
+            foreach (DictionaryEntry DE in SU.PlayerTargets)
+            {
+                P.WriteInt32(((Game.Character)DE.Key).EntityID);
+                P.WriteInt32((uint)DE.Value);
+                P.Move(4);
+            }
+            foreach (DictionaryEntry DE in SU.NPCTargets)
+            {
+                P.WriteInt32(((Game.NPC)DE.Key).EntityID);
+                P.WriteInt32((uint)DE.Value);
+                P.Move(4);
+            }
+            foreach (DictionaryEntry DE in SU.MiscTargets)
+            {
+                P.WriteInt32((uint)DE.Key);
+                P.WriteInt32((uint)DE.Value);
+                P.Move(4);
+            }
+
+            return P;
+        }
+        public static COPacket ItemPacket(uint UID, uint pos, byte type)
+        {
+            byte[] Packet = new byte[8 + 28];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3f1);
+            P.WriteInt32(UID);
+            P.WriteInt32(pos);
+            P.WriteInt32(type);
+            P.Move(12);
+
+            return P;
+        }
+        public static COPacket StringGuild(uint UID, byte Type, string name, byte Count)
+        {
+            byte[] Packet = new byte[8 + 12 + name.Length];
+            COPacket P = new COPacket(Packet);
+            
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3f7);
+            P.WriteInt32(UID);
+            P.WriteByte(Type);
+            P.WriteByte(Count);
+            P.WriteString(name);
+            P.Move(2);
+
+            return P;
+        }
+        public static COPacket GuildInfo(Features.Guild TheGuild, Game.Character Player)
+        {
+            byte[] Packet = new byte[8 + 40];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x452);
+            P.WriteInt32(TheGuild.GuildID);
+            P.WriteInt32(Player.GuildDonation);
+            P.WriteInt32(TheGuild.Fund);
+            P.WriteInt32((uint)TheGuild.MembersCount);
+            P.WriteByte((byte)Player.GuildRank);
+            P.WriteString(TheGuild.Creator.MembName);
+            P.Move(19 - TheGuild.Creator.MembName.Length);
+
+            return P;
+        }
+        public static COPacket SendGuild(uint GuildID, byte Type)
+        {
+            byte[] Packet = new byte[8 + 12];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x453);
+            P.WriteInt32(Type);
+            P.WriteInt32(GuildID);
+
+            return P;
+        }
+        public static COPacket SpawnEntity(Game.Character C)
+        {
+            byte[] Packet = new byte[8 + 138 + (C.Name + C.MyClient.AuthInfo.Status).Length];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10014);
+            P.WriteInt32(C.Mesh);
+            P.WriteInt32(C.EntityID);
+
+            if (C.MyGuild != null)
+            {
+                P.WriteInt16(C.MyGuild.GuildID);//Guild ID
+                P.Move(1);//Guild Branch ID maybe
+                P.WriteByte((byte)C.GuildRank);
+            }
+            else
+                P.Move(4);
+            P.WriteInt64((ulong)(C.StatEff.Value + C.VipLevel > 0 ? 0x2000000 : 0));
+
+            if (C.Alive)
+            {
+                P.WriteInt32(C.Equips.HeadGear.ID);
+                P.WriteInt32(C.Equips.Garment.ID);
+                P.WriteInt32(C.Equips.Armor.ID);
+                P.WriteInt32(C.Equips.LeftHand.ID);
+                P.WriteInt32(C.Equips.RightHand.ID);
+                P.WriteInt32(C.Equips.Steed.ID);
+            }
+            else P.Move(24);
+            P.WriteInt32(12);
+            P.WriteInt16(0);
+            P.WriteInt16(0);
+            if (C.Alive)
+                P.WriteInt16(C.Hair);
+            else P.Move(2);
+            P.WriteInt16(C.Loc.X);
+            P.WriteInt16(C.Loc.Y);
+
+            P.WriteByte(C.Direction);
+            P.WriteByte(C.Action);
+            P.Move(4);
+            P.WriteByte(C.Reborns);
+            P.WriteInt16(C.Level);
+            P.WriteByte(0);//type 0 = screen / 1 = window
+            P.Move(16);
+            P.WriteInt32((byte)C.Nobility.Rank);
+            P.WriteInt16((ushort)C.Equips.Armor.Color);
+            P.WriteInt16((ushort)C.Equips.LeftHand.Color);
+            P.WriteInt16((ushort)C.Equips.HeadGear.Color);
+            P.WriteInt32(C.UniversityPoints);
+            P.WriteInt16(C.Equips.Steed.Plus);
+            P.WriteInt32(0);//Not sure
+            P.WriteInt32(C.Equips.Steed.TalismanProgress);
+            P.Move(24);
+            P.WriteByte(1);
+            P.WriteByte((byte)(C.Name + C.MyClient.AuthInfo.Status).Length);
+            P.WriteString((C.Name + C.MyClient.AuthInfo.Status));
+
+            return P;
+        }
+        public static COPacket SpawnViewed(Game.Character C, byte Type)
+        {
+            byte[] Packet = new byte[8 + 138 + (C.Name + C.MyClient.AuthInfo.Status).Length];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10014);
+            P.WriteInt32(C.Mesh);
+            P.WriteInt32(C.EntityID);
+
+            if (C.MyGuild != null)
+            {
+                P.WriteInt16(C.MyGuild.GuildID);//Guild ID
+                P.Move(1);//Guild Branch ID maybe
+                P.WriteByte((byte)C.GuildRank);
+            }
+            else
+                P.Move(4);
+            P.WriteInt64((ulong)(C.StatEff.Value + C.VipLevel > 0 ? 0x2000000 : 0));
+
+            if (C.Alive)
+            {
+                P.WriteInt32(C.Equips.HeadGear.ID);
+                P.WriteInt32(C.Equips.Garment.ID);
+                P.WriteInt32(C.Equips.Armor.ID);
+                P.WriteInt32(C.Equips.LeftHand.ID);
+                P.WriteInt32(C.Equips.RightHand.ID);
+                P.WriteInt32(C.Equips.Steed.ID);
+            }
+            else P.Move(24);
+            P.WriteInt32(12);
+            P.WriteInt16(0);
+            P.WriteInt16(0);
+            if (C.Alive)
+                P.WriteInt16(C.Hair);
+            else P.Move(2);
+            P.WriteInt16(C.Loc.X);
+            P.WriteInt16(C.Loc.Y);
+
+            P.WriteByte(C.Direction);
+            P.WriteByte(C.Action);
+            P.Move(4);
+            P.WriteByte(C.Reborns);
+            P.WriteInt16(C.Level);
+            P.WriteByte(Type);//type 0 = screen / 1 = window
+            P.Move(16);
+            P.WriteInt32((byte)C.Nobility.Rank);
+            P.WriteInt16((ushort)C.Equips.Armor.Color);
+            P.WriteInt16((ushort)C.Equips.LeftHand.Color);
+            P.WriteInt16((ushort)C.Equips.HeadGear.Color);
+            P.WriteInt32(C.UniversityPoints);
+            P.WriteInt16(C.Equips.Steed.Plus);
+            P.WriteInt32(0);//Not sure
+            P.WriteInt32(C.Equips.Steed.TalismanProgress);
+            P.Move(24);
+            P.WriteByte(1);
+            P.WriteByte((byte)(C.Name + C.MyClient.AuthInfo.Status).Length);
+            P.WriteString((C.Name + C.MyClient.AuthInfo.Status));
+            return P;
+        }
+        public static COPacket AttackPacket(uint Attacker, uint Attacked, ushort X, ushort Y, uint Damage, byte AttackType)
+        {
+            byte[] Data = new byte[8 + 32];
+            COPacket P = new COPacket(Data);
+
+            P.WriteInt16((ushort)(Data.Length - 8));
+            P.WriteInt16((ushort)0x3FE);
+            P.Move(4);
+            P.WriteInt32(Attacker);
+            if (Damage != 0)
+                P.WriteInt32(Attacked);
+            else
+                P.Move(4);
+            P.WriteInt16(X);
+            P.WriteInt16(Y);
+            P.WriteInt32(AttackType);
+            if (Damage != 0)
+                P.WriteInt32(Damage);
+            else
+                P.Move(4);
+            P.Move(4);
+
+            return P;
+        }
+        public static COPacket Movement(uint UID, byte Dir)
+        {
+            byte[] Packet = new byte[8 + 16];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10005);
+            P.WriteInt32((byte)(Dir + 8 * Program.Rnd.Next(7)));
+            P.WriteInt32(UID);            
+            P.WriteInt32((uint)Environment.TickCount);
+
+            return P;
+        }
+        public static COPacket String(uint UID, byte Type, string str)
+        {
+            byte[] Packet = new byte[8 + 11 + str.Length];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3f7);
+            P.WriteInt32(UID);
+            P.WriteByte(Type);
+            P.WriteByte(1);
+            P.WriteByte((byte)str.Length);
+            P.WriteString(str);
+
+            return P;
+        }
+        public static COPacket SpawnEntity(Game.Mob C)
+        {
+            byte[] Packet = new byte[8 + 138 + C.Name.Length];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10014);
+            P.WriteInt32(C.Mesh);
+            P.WriteInt32(C.EntityID);
+            P.WriteInt32(0);
+            P.WriteInt64(C.PoisonedInfo == null ? 0 : (ulong)0x2);//Status Effect
+            P.Move(28);
+            P.WriteInt16((ushort)C.CurrentHP);
+            P.WriteInt16(C.Level);
+            P.Move(2);//Hair
+            P.WriteInt16(C.Loc.X);
+            P.WriteInt16(C.Loc.Y);
+            P.WriteByte(C.Direction);
+            P.WriteByte(C.Action);
+            P.Move(72);
+            P.WriteByte(1);
+            P.WriteByte((byte)C.Name.Length);
+            P.WriteString(C.Name);
+
+            return P;
+        }
+        public static COPacket SpawnEntity(ushort Mesh, string Name, Game.Location Loc)
+        {
+            byte[] Packet = new byte[8 + 97 + Name.Length];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10014);
+            P.WriteInt32(Mesh);
+            P.WriteInt32((uint)Program.Rnd.Next(400000, 500000));
+            P.WriteInt64(0);//Status Effect
+            P.Move(28);
+            P.WriteInt16((ushort)65535);
+            P.WriteInt16(130);
+            P.Move(2);//Hair
+            P.WriteInt16(Loc.X);
+            P.WriteInt16(Loc.Y);
+            P.WriteByte(0);
+            P.WriteByte(100);
+            P.Move(35);
+            P.WriteByte(1);
+            P.WriteByte((byte)Name.Length);
+            P.WriteString(Name);
+
+            return P;
+        }
+        public static COPacket SpawnEntity(Game.Companion Cmp)
+        {
+            byte[] Packet = new byte[8 + 97 + Cmp.Name.Length];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10014);
+            P.WriteInt32(Cmp.Mesh);
+            P.WriteInt32(Cmp.EntityID);
+            P.WriteInt64(0);//Status Effect
+            P.Move(28);
+            P.WriteInt16(Cmp.CurHP);
+            P.WriteInt16(Cmp.Level);
+            P.Move(2);//Hair
+            P.WriteInt16(Cmp.Loc.X);
+            P.WriteInt16(Cmp.Loc.Y);
+            P.WriteByte(0);
+            P.WriteByte(100);
+            P.Move(35);
+            P.WriteByte(1);
+            P.WriteByte((byte)Cmp.Name.Length);
+            P.WriteString(Cmp.Name);
+
+            return P;
+        }
+        public static COPacket GeneralData(uint Identifier, uint Value1, ushort Value2, ushort Value3, ushort Type, uint Time)
+        {
+            byte[] Packet = new byte[8 + 28];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10010);
+            P.WriteInt32(Identifier);
+            P.WriteInt32(Value1);
+            P.WriteInt32((uint)Time);
+            P.WriteInt32(Type);
+            P.WriteInt16(Value2);
+            P.WriteInt16(Value3);
+            P.Move(4);
+            return P;
+        }
+        public static unsafe COPacket DHKeyPacket(string Key, byte[] ServerIV, byte[] ClientIV)
+        {
+            byte[] Junk = new byte[Program.Rnd.Next(8, 16)];
+
+            fixed (byte* p = Junk)
+            {
+                for (int i = 0; i < Junk.Length; i++)
+                    *(p + i) = (byte)Program.Rnd.Next(byte.MaxValue);
+            }
+
+            byte[] Packet = new byte[321 + Junk.Length];
+            COPacket P = new COPacket(Packet);
+            try
+            {
+                for (int i = 0; i < 11; i++)
+                    P.WriteByte((byte)Program.Rnd.Next(byte.MaxValue));
+                P.WriteInt32((uint)(Packet.Length - 11));
+                P.WriteInt32((uint)Junk.Length);
+                P.WriteBytes(Junk);
+                P.WriteInt32(8);
+                P.WriteBytes(ServerIV);
+                P.WriteInt32(8);
+                P.WriteBytes(ClientIV);
+                P.WriteInt32(128);
+                P.WriteString("A320A85EDD79171C341459E94807D71D39BB3B3F3B5161CA84894F3AC3FC7FEC317A2DDEC83B66D30C29261C6492643061AECFCF4A051816D7C359A6A7B7D8FB");
+                P.WriteInt32(2);
+                P.WriteString("05");
+                P.WriteInt32(128);
+                P.WriteString(Key);
+            }
+            catch (Exception Exc) { Program.WriteLine(Exc); }
+
+            return P;
+        }
+        public static COPacket Packet2048(uint CharUID)
+        {
+            byte[] Packet = new byte[8 + 16];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)2048);
+            P.WriteInt32(CharUID);
+            P.WriteInt32(4);
+            P.WriteInt32(0);
+
+            return P;
+        }
+        public static COPacket Packet1032(uint CharUID)
+        {
+            byte[] Packet = new byte[8 + 16];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)1032);
+            P.WriteInt32(CharUID);
+            P.WriteInt32(0x1f);
+            P.WriteInt32(0);
+
+            return P;
+        }
+        public static COPacket GeneralData(uint Identifier, uint Value1, ushort Value2, ushort Value3, ushort Type, byte Direction)
+        {
+            byte[] Packet = new byte[8 + 28];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10010);
+            P.WriteInt32(Identifier);
+            P.WriteInt32(Value1);
+            P.WriteInt32(Native.timeGetTime());
+            P.WriteInt16(Type);
+            P.WriteInt16(Direction);
+            P.WriteInt16(Value2);
+            P.WriteInt16(Value3);            
+            P.Move(4);
+            return P;
+        }
+        public static COPacket GeneralData(uint Identifier, uint Value1, ushort Value2, ushort Value3, ushort Type)
+        {
+            byte[] Packet = new byte[8 + 28];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10010);
+            P.WriteInt32(Identifier);
+            P.WriteInt32(Value1);
+            P.WriteInt32((uint)Native.timeGetTime());
+            P.WriteInt32(Type);
+            P.WriteInt16(Value2);
+            P.WriteInt16(Value3);
+            P.Move(4);
+            return P;
+        }
+        public static COPacket GeneralData(uint Identifier, ushort Value1, ushort Value2, ushort Value3, ushort Value4, byte Direction, ushort Type)
+        {
+            byte[] Packet = new byte[8 + 28];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10010);
+            P.WriteInt32(Identifier);
+            P.WriteInt16(Value1);
+            P.WriteInt16(Value2);
+            P.WriteInt32((uint)Native.timeGetTime());
+            P.WriteInt32(Type);
+            P.WriteInt16(Value3);
+            P.WriteInt16(Value4);
+            P.WriteInt16(Direction);
+            return P;
+        }
+        
+        public static COPacket AddItem(Game.Item I, byte Pos)
+        {
+            byte[] Packet = new byte[8 + 48];
+            COPacket P = new COPacket(Packet);
+            try
+            {
+                P.WriteInt16((ushort)(Packet.Length - 8));
+                P.WriteInt16((ushort)0x3f0);
+                P.WriteInt32(I.UID);
+                P.WriteInt32(I.ID);
+                P.WriteInt16(I.CurDur);
+                P.WriteInt16(I.MaxDur);
+                P.WriteInt16(1);
+                P.WriteInt16(Pos);
+                P.WriteInt32(I.TalismanProgress);
+                P.WriteByte((byte)I.Soc1);
+                P.WriteByte((byte)I.Soc2);
+                P.WriteInt16((ushort)I.Effect);
+                P.WriteByte(I.Plus);
+                P.WriteByte(I.Bless);
+                if (I.FreeItem)
+                    P.WriteByte(1);
+                else
+                    P.WriteByte(0);
+                P.WriteByte(I.Enchant);
+                P.Move(6);
+                if (I.Locked)
+                    P.WriteInt16(3);
+                else P.WriteInt16(0);
+                if (I.Color == 0)
+                    I.Color = (Game.Item.ArmorColor)new Random().Next(1, 9);
+                P.WriteInt32((uint)I.Color);
+                P.WriteInt32(I.Progress);
+            }
+            catch (Exception Exc) { Program.WriteLine(Exc); }
+            return P;
+        }
+
+        public static COPacket UpdateItem(Game.Item I, byte Pos)
+        {
+            byte[] Packet = new byte[8 + 48];
+            COPacket P = new COPacket(Packet);
+            try
+            {
+                P.WriteInt16((ushort)(Packet.Length - 8));
+                P.WriteInt16((ushort)0x3f0);
+                P.WriteInt32(I.UID);
+                P.WriteInt32(I.ID);
+                P.WriteInt16(I.CurDur);
+                P.WriteInt16(I.MaxDur);
+                P.WriteInt16(3);
+                P.WriteInt16(Pos);
+                P.WriteInt32(I.TalismanProgress);
+                P.WriteByte((byte)I.Soc1);
+                P.WriteByte((byte)I.Soc2);
+                P.WriteInt16((ushort)I.Effect);
+                P.WriteByte(I.Plus);
+                P.WriteByte(I.Bless);
+                if (I.FreeItem)
+                    P.WriteByte(1);
+                else
+                    P.WriteByte(0);
+                P.WriteByte(I.Enchant);
+                P.Move(6);
+                if (I.Locked)
+                    P.WriteInt16(3);
+                else P.WriteInt16(0);
+                if (I.Color == 0)
+                    I.Color = (Game.Item.ArmorColor)new Random().Next(1, 9);
+                P.WriteInt32((uint)I.Color);
+                P.WriteInt32(I.Progress);
+            }
+            catch (Exception Exc) { Program.WriteLine(Exc); }
+            return P;
+        }
+        public static COPacket CharacterInfo(Game.Character C)
+        {
+            byte[] Packet = new byte[98 + (C.Spouse.Length) + (C.Name + C.MyClient.AuthInfo.Status).Length + 4];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3ee);
+            P.WriteInt32(C.EntityID);
+            P.WriteInt32(C.Mesh);
+            P.WriteInt16(C.Hair);
+            P.WriteInt32(C.Silvers);
+            P.WriteInt32(C.CPs);
+            P.WriteInt64((ulong)C.Experience);
+            P.Move(20);
+            P.WriteInt16(C.Str);
+            P.WriteInt16(C.Agi);
+            P.WriteInt16(C.Vit);
+            P.WriteInt16(C.Spi);
+            P.WriteInt16(C.StatPoints);
+            P.WriteInt16((ushort)C.CurHP);
+            P.WriteInt16((ushort)C.CurMP);
+            P.WriteInt16(C.PKPoints);
+            P.WriteByte(C.Level);
+            P.WriteByte(C.Job);
+            P.WriteByte(0);
+            P.WriteByte(C.Reborns);
+            P.WriteByte(0);
+            P.WriteInt32(C.UniversityPoints);
+            P.Move(12);
+            P.WriteByte(2);
+            P.WriteByte((byte)(C.Name + C.MyClient.AuthInfo.Status).Length);
+            P.WriteString((C.Name + C.MyClient.AuthInfo.Status));
+            P.WriteByte((byte)C.Spouse.Length);
+            P.WriteString(C.Spouse);
+
+            return P;
+        }
+        public static COPacket Skill(Game.Skill S)
+        {
+            byte[] Packet = new byte[8 + 12];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x44f);
+            P.WriteInt32(S.Exp);
+            P.WriteInt16(S.ID);
+            P.WriteInt16(S.Lvl);
+
+            return P;
+        }
+        public static COPacket Prof(Game.Prof Prof)
+        {
+            byte[] Packet = new byte[8 + 16];
+            COPacket P = new COPacket(Packet);
+
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x401);
+            P.WriteInt32(Prof.ID);
+            P.WriteInt32(Prof.Lvl);
+            P.WriteInt32(Prof.Exp);
+
+            return P;
+        }
+        public static COPacket Packet1012(uint UID)
+        {
+            byte[] Packet = new byte[8 + 32];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)1012);
+            P.WriteInt32(UID);
+            P.Move(4);
+            byte[] bb = new byte[16];
+            for (int i = 0; i < 16; i++)
+                bb[i] = (byte)Program.Rnd.Next(255);
+            P.WriteBytes(bb);
+            P.Move(4);
+
+            return P;
+        }
+        public static COPacket Packet1025()
+        {
+            byte[] Packet = new byte[8 + 16];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)1025);
+            P.Move(4);
+            P.WriteInt32(1);
+            P.Move(4);
+
+            return P;
+        }
+        public static COPacket Packet1012Time(uint UID)
+        {
+            byte[] Packet = new byte[8 + 32];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)1012);
+            P.WriteInt32(UID);
+            P.WriteInt32(Native.timeGetTime());
+            byte[] bb = new byte[16];
+            for (int i = 0; i < 16; i++)
+                bb[i] = (byte)Program.Rnd.Next(255);
+            P.WriteBytes(bb);
+            P.WriteInt32(0xf76d);
+
+            return P;
+        }
+        public static COPacket Status56(uint UID, Game.Status Type, ulong Value)
+        {
+            byte[] Packet = new byte[8 + 48];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10017);
+            P.WriteInt32(UID);
+            P.WriteInt32(0x02);
+            P.WriteInt32(10000000);
+            P.Move(8);
+            P.WriteInt32((uint)Type);
+            P.WriteInt64((ulong)Value);
+            P.Move(8);
+
+            return P;
+        }
+        public static COPacket Status(uint UID, Game.Status Type, ulong Value)
+        {
+            byte[] Packet = new byte[8 + 36];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10017);
+            P.WriteInt32(UID);
+            P.WriteInt32(0x01);
+            P.WriteInt32((uint)Type);
+            P.WriteInt64((ulong)Value);
+            P.Move(12);
+
+            return P;
+        }
+        public static COPacket Status2(uint UID, Game.Status Type, ulong Value, byte Type2)
+        {
+            byte[] Packet = new byte[8 + 36];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)10017);
+            P.WriteInt32(UID);
+            P.WriteInt32(Type2);
+            P.WriteInt32((uint)Type);
+            P.WriteInt64((ulong)Value);
+            P.Move(12);
+
+            return P;
+        }
+        
+        public static COPacket ChatMessage(uint MessageID, string From, string To, string Message, ushort Type, uint Mesh)
+        {
+            byte[] Packet = new byte[8 + 34 + Message.Length + From.Length + To.Length];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3ec);
+            P.WriteBytes(new byte[] { 0xff, 0xff, 0xff, 0x00 });
+            P.WriteInt32(Type);
+            P.WriteInt32(MessageID);
+            P.WriteInt32(Mesh);
+            P.WriteInt32(Mesh);
+            P.WriteByte(4);
+            P.WriteByte((byte)From.Length);
+            P.WriteString(From);
+            P.WriteByte((byte)To.Length);
+            P.WriteString(To);
+            P.Move(1);
+            if (Message.Length < 255)
+                P.WriteByte((byte)(Message.Length));
+            else
+                P.WriteByte(255);
+
+            P.WriteString(Message, 255);
+            P.Move(6);
+
+            return P;
+        }
+        public static COPacket Time()
+        {
+            byte[] Packet = new byte[8 + 36];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)1033);
+            P.Move(4);
+            P.WriteInt32((uint)(DateTime.Now.Year - 1900));
+            P.WriteInt32((uint)(DateTime.Now.Month - 1));
+            P.WriteInt32((uint)(DateTime.Now.DayOfYear));
+            P.WriteInt32((uint)(DateTime.Now.Day));
+            P.WriteInt32((uint)(DateTime.Now.Hour));
+            P.WriteInt32((uint)(DateTime.Now.Minute));
+            P.WriteInt32((uint)(DateTime.Now.Second));
+
+            return P;
+        }
+        public static COPacket Vigor(uint Amount)
+        {
+            byte[] Packet = new byte[8 + 36];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)1033);
+            P.WriteInt32(2);
+            P.WriteInt32(Amount);
+
+            return P;
+        }   
+        public static COPacket SystemMessage(uint MessageID, string Message)
+        {
+            byte[] Packet = new byte[8 + 50 + Message.Length];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)1004);
+            P.WriteBytes(new byte[] { 0xff, 0xff, 0xff, 0x00 });
+            P.WriteInt32(0x835);
+            P.WriteInt32(MessageID);
+            P.Move(8);
+            P.WriteByte(4);
+            P.WriteByte(6);
+            P.WriteString("SYSTEM");
+            P.WriteByte(8);
+            P.WriteString("ALLUSERS");
+            P.Move(1);
+            P.WriteByte((byte)Message.Length);
+            P.WriteString(Message);
+            P.Move(7);
+
+            return P;
+        }
+        public static COPacket PopUpMessage(uint MessageID, string Message)
+        {
+            byte[] Packet = new byte[8 + 43 + Message.Length];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)(Packet.Length - 8));
+            P.WriteInt16((ushort)0x3ec);
+            P.WriteBytes(new byte[] { 0xff, 0xff, 0xff, 0x00 });
+            P.WriteInt32(0x834);
+            P.WriteInt32(MessageID);
+            P.Move(8);
+            P.WriteByte(4);
+            P.WriteByte(6);
+            P.WriteString("SYSTEM");
+            P.WriteByte(8);
+            P.WriteString("ALLUSERS");
+            P.Move(1);
+            P.WriteByte((byte)Message.Length);
+            P.WriteString(Message);
+            P.Move(3);
+
+            return P;
+        }
+        public static COPacket SendAuthentication(string ip, byte[] IV)
+        {
+            byte[] Packet = new byte[32];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)Packet.Length);
+            P.WriteInt16(0x41f);
+            P.WriteBytes(IV);
+            P.WriteString(ip);
+            P.Move(16 - ip.Length);
+            P.WriteInt16(5816);
+            return P;
+        }
+        public static COPacket WrongAuth()
+        {
+            byte[] Packet = new byte[32];
+            COPacket P = new COPacket(Packet);
+            P.WriteInt16((ushort)Packet.Length);
+            P.WriteInt16(0x41f);
+            P.Move(4);
+            P.WriteInt32((uint)1);
+            P.WriteByte(0xd5);
+            P.WriteByte(0xca);
+            P.WriteByte(0xba);
+            P.WriteByte(0xc5);
+            P.WriteByte(0xc3);
+            P.WriteByte(0xfb);
+            P.WriteByte(0xbb);
+            P.WriteByte(0xf2);
+            P.WriteByte(0xbf);
+            P.WriteByte(0xda);
+            P.WriteByte(0xc1);
+            P.WriteByte(0xee);
+            P.WriteByte(0xb4);
+            P.WriteByte(0xed);
+
+            return P;
+        }
+    }
+}

@@ -38,7 +38,6 @@ namespace DeathWish.WebServer
 
         public static bool UpdateDBTables = false;
 
-
         public static void Init()
         {
             if (Program.ServerConfig.IsInterServer == false)
@@ -46,17 +45,26 @@ namespace DeathWish.WebServer
                 PollConnections = new ConnectionPoll();
 
                 AccServer = new ServerSockets.ServerSocket(
-                     new Action<ServerSockets.SecuritySocket>(p => new Client(p))
-                     , new Action<ServerSockets.SecuritySocket, ServerSockets.Packet>((p, data) =>
-                     {
-                         ProcesReceive(p, data);
-                     })
-                     , new Action<ServerSockets.SecuritySocket>(p => (p.Client as Client).Disconnect()));
+                    new Action<ServerSockets.SecuritySocket>(p => new Client(p)),
+                    new Action<ServerSockets.SecuritySocket, ServerSockets.Packet>((p, data) =>
+                    {
+                        ProcesReceive(p, data);
+                    }),
+                    new Action<ServerSockets.SecuritySocket>(p =>
+                    {
+                        if (p.Client is Client client)
+                        {
+                            client.Disconnect();
+                        }
+                        // Optional: log or handle case where p.Client is null
+                    })
+                );
+
                 AccServer.Initilize(Program.ServerConfig.Port_SendSize, Program.ServerConfig.Port_ReceiveSize, 1, 3);
                 AccServer.Open(Program.ServerConfig.AccServerIPAddres, Program.ServerConfig.WebPort, Program.ServerConfig.Port_BackLog);
             }
-     
         }
+
 
 
         public static unsafe void Close()
@@ -936,7 +944,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -960,7 +968,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -984,7 +992,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1008,7 +1016,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1032,7 +1040,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1056,7 +1064,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1080,7 +1088,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1104,7 +1112,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1128,7 +1136,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1152,7 +1160,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1176,7 +1184,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1200,7 +1208,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1224,7 +1232,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1248,7 +1256,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1272,7 +1280,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1296,7 +1304,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1320,7 +1328,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1344,7 +1352,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1368,7 +1376,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1392,7 +1400,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1416,7 +1424,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1440,7 +1448,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1464,7 +1472,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1488,7 +1496,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1512,7 +1520,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1536,7 +1544,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1560,7 +1568,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1584,7 +1592,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1608,7 +1616,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1632,7 +1640,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1656,7 +1664,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1680,7 +1688,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1689,7 +1697,7 @@ namespace DeathWish.WebServer
                                         }
                                     case 1043:
                                         {
-                                          //  user.Inventory.Add(stream, 3100052);
+                                            //  user.Inventory.Add(stream, 3100052);
                                             string ItemName = "BlackFridayPack";
                                             user.CreateBoxDialog("You have received " + ItemName + ". Thank you for your donation.");
                                             Object.Send(stream.ClaimPrize(UserUID, PrizeUID, PrizeID, 1));
@@ -1704,7 +1712,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " " + ItemName + " bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1727,11 +1735,11 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " 100,000CPs bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
-                                         //     user.Player.SendUpdate(stream, DeathWish.Game.MsgServer.MsgUpdate.CreditGifts.ShowSpecialItems, DeathWish.Game.MsgServer.MsgUpdate.DataType.CreditGifts, false);
+                                                //     user.Player.SendUpdate(stream, DeathWish.Game.MsgServer.MsgUpdate.CreditGifts.ShowSpecialItems, DeathWish.Game.MsgServer.MsgUpdate.DataType.CreditGifts, false);
                                             }
 
                                             break;
@@ -1752,11 +1760,11 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " 220,000CPs bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
-                                            //    user.Player.SendUpdate(stream, DeathWish.Game.MsgServer.MsgUpdate.CreditGifts.ShowSpecialItems, DeathWish.Game.MsgServer.MsgUpdate.DataType.CreditGifts, false);
+                                                //    user.Player.SendUpdate(stream, DeathWish.Game.MsgServer.MsgUpdate.CreditGifts.ShowSpecialItems, DeathWish.Game.MsgServer.MsgUpdate.DataType.CreditGifts, false);
                                             }
                                             break;
 
@@ -1777,7 +1785,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " 550,000CPs bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1843,13 +1851,13 @@ namespace DeathWish.WebServer
                                             user.CreateBoxDialog("You have received 2 RechargePoints and 1hour Vip6. Thank you for your support.");
                                             Object.Send(stream.ClaimPrize(UserUID, PrizeUID, PrizeID, 1));
 
-                                          
+
                                             break;
                                         }
                                     case 1004:
                                         {
                                             user.UpdateLevel(stream, 140, true, false);
-                                           
+
 
                                             user.CreateBoxDialog("You have received Level 140. Thank you for your donation.");
                                             Object.Send(stream.ClaimPrize(UserUID, PrizeUID, PrizeID, 1));
@@ -1865,7 +1873,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " Level 140 bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1893,7 +1901,7 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " Vip6(3 Days) bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
@@ -1903,15 +1911,15 @@ namespace DeathWish.WebServer
                                         }
                                     case 1003://vip 6
                                         {
-                                           /* user.Player.VipLevel = 6;
-                                            if (DateTime.Now > user.Player.ExpireVip)
-                                                user.Player.ExpireVip = DateTime.Now.AddDays(30);
-                                            else
-                                                user.Player.ExpireVip = user.Player.ExpireVip.AddDays(30);
-                                            user.Player.SendUpdate(stream, user.Player.VipLevel, DeathWish.Game.MsgServer.MsgUpdate.DataType.VIPLevel);
-                                            user.Player.UpdateVip(stream);*/
+                                            /* user.Player.VipLevel = 6;
+                                             if (DateTime.Now > user.Player.ExpireVip)
+                                                 user.Player.ExpireVip = DateTime.Now.AddDays(30);
+                                             else
+                                                 user.Player.ExpireVip = user.Player.ExpireVip.AddDays(30);
+                                             user.Player.SendUpdate(stream, user.Player.VipLevel, DeathWish.Game.MsgServer.MsgUpdate.DataType.VIPLevel);
+                                             user.Player.UpdateVip(stream);*/
 
-                                           // user.Inventory.Add(stream, 780000, 1);
+                                            // user.Inventory.Add(stream, 780000, 1);
                                             user.CreateBoxDialog("You have received VIP6(Token). Thank you for your donation.");
                                             Object.Send(stream.ClaimPrize(UserUID, PrizeUID, PrizeID, 1));
 
@@ -1926,29 +1934,29 @@ namespace DeathWish.WebServer
                                             Program.SendGlobalPackets.Enqueue(messaj.GetArray(stream));
                                             DeathWish.Game.MsgServer.MsgMessage messaj2 = new DeathWish.Game.MsgServer.MsgMessage(user.Player.Name + " ! claimed " + amessaj + " Vip6(Token) bought from donate page.(Thanks for supporting our server).", DeathWish.Game.MsgServer.MsgMessage.MsgColor.white, DeathWish.Game.MsgServer.MsgMessage.ChatMode.BroadcastMessage);
                                             Program.SendGlobalPackets.Enqueue(messaj2.GetArray(stream));
-                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) !=  Role.Player.MainFlagType.CanClaim)
+                                            if ((user.Player.MainFlag & Role.Player.MainFlagType.CanClaim) != Role.Player.MainFlagType.CanClaim)
                                             {
                                                 user.Player.MainFlag |= Role.Player.MainFlagType.CanClaim;
                                                 user.Player.SendUpdate(stream, (uint)user.Player.MainFlag, DeathWish.Game.MsgServer.MsgUpdate.DataType.MainFlag, false);
-                                             //   user.Player.SendUpdate(stream, DeathWish.Game.MsgServer.MsgUpdate.CreditGifts.ShowSpecialItems, DeathWish.Game.MsgServer.MsgUpdate.DataType.CreditGifts, false);
+                                                //   user.Player.SendUpdate(stream, DeathWish.Game.MsgServer.MsgUpdate.CreditGifts.ShowSpecialItems, DeathWish.Game.MsgServer.MsgUpdate.DataType.CreditGifts, false);
                                             }
                                             break;
                                         }
-                                  
+
 
 #endif
-                                   /* case 4009://gold prize
-                                        {
-                                            if (user.Inventory.HaveSpace(1))
-                                            {
-                                                user.Inventory.Add(stream, 2100075, 1, 0, 1);
-                                                user.CreateBoxDialog("You`ve receive one Gold Prize(-1) . Thank for you donation.");
-                                                Object.Send(stream.ClaimPrize(UserUID, PrizeUID, PrizeID, 1));
-                                            }
-                                            else
-                                                user.CreateBoxDialog("Please make 1 space in your inventory.");
-                                            break;
-                                        }*/
+                                        /* case 4009://gold prize
+                                             {
+                                                 if (user.Inventory.HaveSpace(1))
+                                                 {
+                                                     user.Inventory.Add(stream, 2100075, 1, 0, 1);
+                                                     user.CreateBoxDialog("You`ve receive one Gold Prize(-1) . Thank for you donation.");
+                                                     Object.Send(stream.ClaimPrize(UserUID, PrizeUID, PrizeID, 1));
+                                                 }
+                                                 else
+                                                     user.CreateBoxDialog("Please make 1 space in your inventory.");
+                                                 break;
+                                             }*/
                                 }
                             }
                         }
@@ -1979,7 +1987,7 @@ namespace DeathWish.WebServer
             {
 
                 Object.Send(stream);
-               
+
             }
             return stream;
         }
@@ -2076,7 +2084,7 @@ namespace DeathWish.WebServer
                     for (int x = 0; x < Math.Min(array.Length, 9); x++)
                     {
                         var element = array[x];
-                        stream.Write(element.GuildName,16);
+                        stream.Write(element.GuildName, 16);
                         stream.Write(element.Info.LeaderName, 16);
                         stream.Write(element.CTF_Exploits);
                     }

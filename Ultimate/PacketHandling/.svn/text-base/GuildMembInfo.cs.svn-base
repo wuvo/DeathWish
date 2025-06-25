@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NewestCOServer.PacketHandling
+{
+    public class GuildMembInfo
+    {
+        public static unsafe void Handle(Main.GameClient GC, byte[] Data)
+        {
+            string Name = "";
+            for (int i = 9; i < 28; i++)
+            {
+                if (Data[i] != 0)
+                    Name += Convert.ToChar(Data[i]);
+                else break;
+            }
+            foreach (Features.MemberInfo M in ((Hashtable)GC.MyChar.MyGuild.Members[(byte)GC.MyChar.MembInfo.Rank]).Values)
+            {                
+                if (M.MembName == Name)
+                {
+                    fixed (byte* p = Data)
+                    {
+                        *((uint*)(p + 4)) = (uint)M.Donation;
+                        *(p + 8) = (byte)M.Rank;
+                    }
+                }
+            }
+            COPacket P = new COPacket(Data);
+            GC.AddSend(P);
+        }
+    }
+}

@@ -1,0 +1,119 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/109/NewestCOServer/PacketHandling
+END
+Jump.cs
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/85/NewestCOServer/PacketHandling/Jump.cs
+END
+GetGuildMembers.cs
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/GetGuildMembers.cs
+END
+Chat.cs
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/109/NewestCOServer/PacketHandling/Chat.cs
+END
+GuildMembInfo.cs
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/GuildMembInfo.cs
+END
+CharacterMaking.cs
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/98/NewestCOServer/PacketHandling/CharacterMaking.cs
+END
+WalkRun.cs
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/85/NewestCOServer/PacketHandling/WalkRun.cs
+END
+Team.cs
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/Team.cs
+END
+Marriage.cs
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/Marriage.cs
+END
+Friends.cs
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/Friends.cs
+END
+Teleport.cs
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/100/NewestCOServer/PacketHandling/Teleport.cs
+END
+Trade.cs
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/Trade.cs
+END
+Revive.cs
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/Revive.cs
+END
+NPCDialog.cs
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/105/NewestCOServer/PacketHandling/NPCDialog.cs
+END
+Portal.cs
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/Portal.cs
+END
+Warehouse.cs
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/110/NewestCOServer/PacketHandling/Warehouse.cs
+END
+Guild.cs
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/Guild.cs
+END
+Compose.cs
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/Compose.cs
+END
+Attack.cs
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/90/NewestCOServer/PacketHandling/Attack.cs
+END
+PickItemUp.cs
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/PickItemUp.cs
+END

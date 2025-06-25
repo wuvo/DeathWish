@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/61/NewestCOServer/PacketHandling/ItemPacket
+END
+DropMoney.cs
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/ItemPacket/DropMoney.cs
+END
+Shops.cs
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/61/NewestCOServer/PacketHandling/ItemPacket/Shops.cs
+END
+DBUpgrade.cs
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/ItemPacket/DBUpgrade.cs
+END
+DropAnItem.cs
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/57/NewestCOServer/PacketHandling/ItemPacket/DropAnItem.cs
+END
+Equip.cs
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/ItemPacket/Equip.cs
+END
+MeteorUpgrade.cs
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/PacketHandling/ItemPacket/MeteorUpgrade.cs
+END

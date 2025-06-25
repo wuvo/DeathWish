@@ -340,7 +340,7 @@ namespace COServer.Database
 
             using (var conn = DataHolder.MySqlConnection)
             {
-                conn.ConnectionString = "Server=localhost;Port=3306;Database=diablo;Uid=root;Password=Topkek6969@;Persist Security Info=True;Pooling=true; Min Pool Size = 32;  Max Pool Size = 300;";
+                conn.ConnectionString = "Server=localhost;Port=3306;Database=diablo;Uid=root;Password=Thetopkek6969@;Persist Security Info=True;Pooling=true; Min Pool Size = 32;  Max Pool Size = 300;";
                 conn.Open();
                 MYSQLCOMMAND cmd = new MYSQLCOMMAND(Command + ";", conn);
                 return cmd.ExecuteNonQuery();
@@ -375,7 +375,7 @@ namespace COServer.Database
 
             using (var conn = DataHolder.MySqlConnection)
             {
-                conn.ConnectionString = "Server=localhost;Port=3306;Database=diablo;Uid=root;Password=Topkek6969@;Persist Security Info=True;Pooling=true; Min Pool Size = 32;  Max Pool Size = 300;";
+                conn.ConnectionString = "Server=localhost;Port=3306;Database=diablo;Uid=root;Password=Thetopkek6969@;Persist Security Info=True;Pooling=true; Min Pool Size = 32;  Max Pool Size = 300;";
                 conn.Open();
                 MYSQLCOMMAND cmd = new MYSQLCOMMAND(Command + ";", conn);
                 return cmd.ExecuteNonQuery();

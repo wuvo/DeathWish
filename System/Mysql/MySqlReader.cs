@@ -22,7 +22,7 @@ namespace COServer.Database
                 _row = 0;
                 using (MySql.Data.MySqlClient.MySqlConnection conn = DataHolder.MySqlConnection)
                 {
-                    conn.ConnectionString = "Server=localhost;Port=3306;Database=diablo;Uid=root;Password=Topkek6969@;Persist Security Info=True;Pooling=true; Min Pool Size = 32;  Max Pool Size = 300;";
+                    conn.ConnectionString = "Server=localhost;Port=3306;Database=diablo;Uid=root;Password=Thetopkek6969@;Persist Security Info=True;Pooling=true; Min Pool Size = 32;  Max Pool Size = 300;";
                     conn.Open();
                     using (var DataAdapter = new MySqlDataAdapter(command.Command, conn))
                         DataAdapter.Fill(_dataset, Table);
@@ -38,7 +38,7 @@ namespace COServer.Database
                 _row = 0;
                 using (MySql.Data.MySqlClient.MySqlConnection conn = DataHolder.MySqlConnection)
                 {
-                    conn.ConnectionString = "Server=localhost;Port=3306;Database=diablo;Uid=root;Password=Topkek69696;Persist Security Info=True;Pooling=true; Min Pool Size = 32;  Max Pool Size = 300;";
+                    conn.ConnectionString = "Server=localhost;Port=3306;Database=diablo;Uid=root;Password=Thetopkek69696;Persist Security Info=True;Pooling=true; Min Pool Size = 32;  Max Pool Size = 300;";
                     conn.Open();
                     using (var DataAdapter = new MySqlDataAdapter(command.Command, conn))
                         DataAdapter.Fill(_dataset, Table);

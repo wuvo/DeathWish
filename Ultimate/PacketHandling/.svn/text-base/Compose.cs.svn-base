@@ -1,0 +1,61 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using NewestCOServer.Game;
+
+namespace NewestCOServer.PacketHandling
+{
+    public class Compose
+    {
+        public static void Handle(Main.GameClient GC, byte[] Data)
+        {
+            uint MainUID = BitConverter.ToUInt32(Data, 8);
+            uint MinorUID1 = BitConverter.ToUInt32(Data, 12);
+
+            Item MainI = GC.MyChar.FindInvItem(MainUID);
+            Item MinorI = GC.MyChar.FindInvItem(MinorUID1);
+
+            if (MainI.ID != 0 && MinorI.ID != 0 && MainI.Plus <= 8)
+            {
+                uint Progress = MainI.Progress;
+                Progress += Database.StonePts[MinorI.Plus];
+
+                GC.MyChar.RemoveItem(MainI);
+
+                while (Progress >= Database.ComposePts[MainI.Plus] && MainI.Plus <= 8)
+                {
+                    Progress -= Database.ComposePts[MainI.Plus];
+                    MainI.Plus++;
+                }
+
+                if (MainI.Plus == 9)
+                    Progress = 0;
+                MainI.Progress = (ushort)Progress;
+                GC.MyChar.AddItem(MainI);
+
+                GC.MyChar.RemoveItem(MinorI);
+            }
+        }
+    
+        static bool OfSameType(uint ID1, uint ID2)
+        {
+            ushort Part1 = (ushort)ItemIDManipulation.Part(ID1, 0, 3);
+            ushort Part2 = (ushort)ItemIDManipulation.Part(ID2, 0, 3);
+
+            if (ItemIDManipulation.Digit(ID1, 1) == ItemIDManipulation.Digit(ID2, 1) && (ItemIDManipulation.Digit(ID1, 1) == 4 || ItemIDManipulation.Digit(ID1, 1) == 5))
+                return true;
+            else if (Part1 == Part2)
+                return true;
+            else if (ItemIDManipulation.Digit(ID1, 5) == ItemIDManipulation.Digit(ID1, 3) && Part1 == 112)
+                return true;
+            else if (ItemIDManipulation.Digit(ID2, 5) == ItemIDManipulation.Digit(ID1, 3) && Part2 == 112)
+                return true;
+            else if (Part1 >= 135 && Part1 <= 139 && Part2 == Part1 - 5)
+                return true;
+            else if (Part2 >= 135 && Part2 <= 139 && Part1 == Part2 - 5)
+                return true;
+            return false;
+        }
+    }
+}

@@ -185,7 +185,7 @@ namespace DeathWish
             public static string FBStoreLink = "https://web.facebook.com/abonyra";
             public static string RedeemLink = "https://web.facebook.com/abonyra";
             public static uint ServerID = 0;
-            public static string IPAddres = "26.12.10.102";
+            public static string IPAddres = "121.99.242.180";
             public static ushort AuthPort = 9960;
             public static ushort GamePort = 5818;
             public static string ServerName = "";
@@ -199,9 +199,9 @@ namespace DeathWish
             public static string DbLocation = "";
             //WebServer
             public static ushort WebPort = 9900;
-            public static string AccServerIPAddres = "26.12.10.102";
+            public static string AccServerIPAddres = "121.99.242.180";
 
-            public static string LoaderIP = "26.12.10.102";
+            public static string LoaderIP = "121.99.242.180";
             public static ushort LoaderPort = 9901;
 
             public static uint ExpRateSpell = 500;
@@ -209,7 +209,7 @@ namespace DeathWish
             public static uint UserExpRate = 1000;
             public static uint PhysicalDamage = 150;
             //interServer
-            public static string InterServerAddress = "26.12.10.102";
+            public static string InterServerAddress = "121.99.242.180";
             public static ushort InterServerPort = 0;
             public static bool IsInterServer = false;
             //public static bool testserver = false;
@@ -299,6 +299,7 @@ namespace DeathWish
                 }
             }
         }
+        public static Cryptography.TransferCipher transferCipher;
         public static unsafe void Main(string[] args)
         {
             byte[] proto = new byte[]
@@ -327,9 +328,9 @@ namespace DeathWish
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
                 ServerSockets.Packet.SealString = "TQServer";
                 //StartDate = DateTime.Now;
-                //NetShield
-                TqShield._TqShield.LoadFilesAntiCheat();
-                //NetShield
+                TransferCipher.Key = Encoding.ASCII.GetBytes("RERT7ER7QE8R7WE84FSD5F45SD4F5SD4FW8E7Q9Q");
+                TransferCipher.Salt = Encoding.ASCII.GetBytes("NBN1V32BF3G6SD5F9AS8D9S7DS84DAS5D4AS");
+                transferCipher = new TransferCipher("127.0.0.1");
                 MsgInvoker = new PacketInvoker(PacketAttribute.Translator);
                 Cryptography.DHKeyExchange.KeyExchange.CreateKeys();
                 Game.MsgTournaments.MsgSchedules.Create();
@@ -598,12 +599,6 @@ namespace DeathWish
                     case "endfighters4":
                         {
                             Game.MsgTournaments.MsgSchedules.FightersPole4.End();
-                            break;
-                        }
-                    case "pro":
-                        {
-                            ProGuardControl cp = new ProGuardControl();
-                            cp.ShowDialog();
                             break;
                         }
                     case "nobilitypole":

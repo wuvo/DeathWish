@@ -1,0 +1,259 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Net.Sockets;
+using OpenSSL;
+using System.Threading;
+
+namespace NewestCOServer.Main
+{
+    public class GameClient
+    {
+        public Game.Character MyChar;
+        public AuthWorker.AuthInfo AuthInfo;
+        public GameCrypto Crypto;
+
+        public DH KeyExchance;
+        public byte[] NewServerIV;
+        public byte[] NewClientIV;
+        public bool SetBF = true;
+        public bool Robot = false;
+
+        public Socket Soc;
+        public uint MessageID = 0;
+        public bool DoneLoading = false;
+        public uint DialogNPC = 0;
+        public bool Paid = false;
+        public bool Agreed = false;
+
+        public bool SpawnOnHold = false;
+        public ushort SpawnXStart = 0;
+        public ushort SpawnYStart = 0;
+
+        public bool LoginDataSent = false;
+        public ArrayList PacketGroup;
+        public bool GM
+        {
+            get { return (AuthInfo.Status.Contains("PM") || AuthInfo.Status.Contains("GM")); }
+        }
+        public GameClient(bool Robot)
+        {
+            if (!Robot)
+            {
+                try
+                {
+                    PacketGroup = new ArrayList();
+                    Crypto = new GameCrypto(ASCIIEncoding.ASCII.GetBytes("DR654dt34trg4UI6"));
+                    KeyExchance = new DH();
+                    KeyExchance.G = 5;
+                    KeyExchance.P = OpenSSL.BigNumber.FromHexString("A320A85EDD79171C341459E94807D71D39BB3B3F3B5161CA84894F3AC3FC7FEC317A2DDEC83B66D30C29261C6492643061AECFCF4A051816D7C359A6A7B7D8FB\0");
+                    KeyExchance.GenerateKeys();
+
+                    NewServerIV = GenerateIV();
+                    NewClientIV = GenerateIV();
+                }
+                catch (Exception Exc) { Program.WriteLine(Exc); }
+            }
+            else
+            {
+                MessageID = (ushort)Program.Rnd.Next(50000);
+            }
+        }
+        byte[] GenerateIV()
+        {
+            System.Random Rnd = new System.Random();
+            byte[] iv = new byte[8];
+            for (byte i = 0; i < 8; i++)
+                iv[i] = (byte)Rnd.Next(byte.MaxValue);
+            return iv;
+        }
+        public void LocalMessage(ushort Type, string Message)
+        {
+            AddSend(Packets.ChatMessage(MessageID, "SYSTEM", MyChar.Name, Message, Type, MyChar.Mesh));
+        }
+        public void Message(ushort Type, string Message)
+        {
+            foreach (Game.Character G in Game.World.H_Chars.Values)
+            {
+                G.MyClient.AddSend(Packets.ChatMessage(MessageID, "SYSTEM", MyChar.Name, Message, Type, MyChar.Mesh));
+            }
+        }
+        public unsafe void EndSend()
+        {
+            if (!Robot)
+            {
+                if (PacketGroup.Count > 0)
+                {
+                    Monitor.Enter(this);
+                    try
+                    {
+                        ArrayList Packets = new ArrayList();
+                        for (int i = 0; i < PacketGroup.Count; i++)
+                            Packets.Add(PacketGroup[i]);
+                        int TotalLength = 0;
+                        foreach (byte[] P in Packets)
+                            if (P != null)
+                                if (P.Length > 0)
+                                    TotalLength += P.Length;
+                        byte[] Data = new byte[TotalLength];
+                        int Pos = 0;
+                        lock (Packets)
+                        {
+                            foreach (byte[] P in Packets)
+                            {
+                                if (P != null)
+                                {
+                                    if (P.Length > 0)
+                                    {
+                                        Buffer.BlockCopy(P, 0, Data, Pos, P.Length);
+                                        Pos += P.Length;
+                                    }
+                                }
+                            }
+                            try
+                            {
+                                Crypto.Encrypt(Data);
+                                Soc.Send(Data);
+                            }
+                            catch { }
+                        }
+                        Packets = null;
+                        PacketGroup = new ArrayList();
+                    }
+                    catch (Exception c) { PacketGroup = new ArrayList(); Program.WriteLine(c.ToString()); }
+                    Monitor.Exit(this);
+                }
+            }
+        }
+        public unsafe void AddSend(COPacket Packet)
+        {
+            byte[] P = Packet.Get;
+            fixed (byte* p = P)
+            {
+                string TQServer = "TQServer";
+                for (int i = 0; i < 8; i++)
+                    *(p + i + P.Length - 8) = Convert.ToByte(TQServer[i]);
+            }
+            if (!Robot)
+            {
+                PacketGroup.Add(P);
+                //Crypto.Encrypt(P);
+                //Soc.Send(P);
+            }
+        }
+        public unsafe void AddSend(byte[] Packet)
+        {
+            byte[] P = new byte[Packet.Length];
+            Packet.CopyTo(P,0);
+            fixed (byte* p = P)
+            {
+                string TQServer = "TQServer";
+                for (int i = 0; i < 8; i++)
+                    *(p + i + P.Length - 8) = Convert.ToByte(TQServer[i]);
+            }
+            if (!Robot)
+            {
+                PacketGroup.Add(P);
+                //Crypto.Encrypt(P);
+                //Soc.Send(P);
+            }
+        }
+        public void LogOff(bool Remove)
+        {
+            try
+            {
+                if (MyChar.MyTeam != null)
+                {
+                    if (MyChar.TeamLeader)
+                        MyChar.MyTeam.Dismiss(MyChar);
+                    else
+                        MyChar.MyTeam.Leaves(MyChar);
+                }
+                if (MyChar.Loc.Map == 1039 || MyChar.Loc.Map == 1036)
+                {
+                    Game.Vector2 V = (Game.Vector2)Database.DefaultCoords[MyChar.Loc.PreviousMap];
+                    MyChar.Teleport(MyChar.Loc.PreviousMap, V.X, V.Y);
+                }
+
+                if (MyChar.MyShop != null)
+                    MyChar.MyShop.Close();
+                foreach (Game.Friend F in MyChar.Friends.Values)
+                {
+                    AddSend(Packets.FriendEnemyPacket(F.UID, F.Name, 15, Convert.ToByte(F.Online)));
+                    if (F.Online)
+                    {
+                        F.Info.MyClient.AddSend(Packets.FriendEnemyPacket(MyChar.EntityID, MyChar.Name, 14, 1));
+                        F.Info.MyClient.AddSend(Packets.FriendEnemyPacket(MyChar.EntityID, MyChar.Name, 15, 0));
+                        F.Info.MyClient.LocalMessage(2005, "Your friend " + MyChar.Name + " has logged off.");
+                    }
+                }
+                if (!MyChar.Alive)
+                {
+                    foreach (ushort[] Point in Database.RevPoints)
+                        if (Point[0] == MyChar.Loc.Map)
+                        {
+                            MyChar.Loc.PreviousMap = MyChar.Loc.Map;
+                            MyChar.Loc.Map = Point[1];
+                            MyChar.Loc.X = Point[2];
+                            MyChar.Loc.Y = Point[3];
+                            break;
+                        }
+                    MyChar.CurHP = 1;
+                }
+            }
+            catch { }
+            if (Remove && Game.World.H_Chars.Contains(MyChar.EntityID))
+            {
+                Program.WriteLine("User " + MyChar.Name + " disconnected.");
+                Database.SaveCharacter(MyChar, AuthInfo.Account);
+                Game.World.H_Chars.Remove(MyChar.EntityID);
+                Game.World.Action(MyChar, Packets.GeneralData(MyChar.EntityID, 0, 0, 0, 135).Get);
+                MyChar.MyClient = null;
+            }
+        }
+        public void Disconnect()
+        {
+            try
+            {
+                if (!Robot)
+                {
+                    if (Soc.Connected)
+                    {
+                        Soc.Shutdown(SocketShutdown.Both);
+                        LogOff(true);
+                        Soc.Close();
+                    }
+                }
+                else
+                    LogOff(true);
+            }
+            catch (Exception Exc) { Program.WriteLine(Exc); }
+        }
+
+        public bool ValidName(string Name)
+        {
+            if (Name.IndexOfAny(new char[14] { ' ', '[', ']', '#', '*', '\\', '/', '<', '>', ':', '"', '|', '?', '='}) > -1) //this is all windows folder invalids characters
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public bool ValidWHPass(string Name)
+        {
+            if (Name.IndexOfAny(new char[10] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }) > -1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+}

@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/109/NewestCOServer/Main
+END
+AuthWorker.cs
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/93/NewestCOServer/Main/AuthWorker.cs
+END
+Blowfish.cs
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/44/NewestCOServer/Main/Blowfish.cs
+END
+GameWorker.cs
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/105/NewestCOServer/Main/GameWorker.cs
+END
+GameClient.cs
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/98/NewestCOServer/Main/GameClient.cs
+END
+Packets.cs
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/conqueronlineprivateserverdevelopment/!svn/ver/109/NewestCOServer/Main/Packets.cs
+END

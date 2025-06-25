@@ -137,9 +137,6 @@ namespace DeathWish.Game.MsgServer
                         client.Inventory.AddItemWitchStack(722136, 0, 30, stream, true);
                         client.Player.SendUpdate(stream, client.Player.Money, MsgServer.MsgUpdate.DataType.Money);
                         client.Send(new MsgServer.MsgMessage("ANSWER_OK", MsgMessage.MsgColor.red, MsgMessage.ChatMode.PopUP).GetArray(stream));
-                        //NetShield
-                        client.Newrole = true;
-                        //NetShield
                         client.Status.MaxHitpoints = client.CalculateHitPoint();
                         client.Player.HitPoints = (int)client.Status.MaxHitpoints;
                         client.ClientFlag |= Client.ServerFlag.CreateCharacterSucces;

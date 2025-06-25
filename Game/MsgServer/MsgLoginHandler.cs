@@ -428,9 +428,6 @@ namespace DeathWish.Game.MsgServer
 
 
                     client.Warehouse.SendReturnedItems(packet);
-                    //NetShield
-                    Game.MsgLoader.CheatPacket.OnLogin(client);
-                    //NetShield
 
                     client.ClientFlag &= ~Client.ServerFlag.AcceptLogin;
                     client.ClientFlag |= Client.ServerFlag.LoginFull;

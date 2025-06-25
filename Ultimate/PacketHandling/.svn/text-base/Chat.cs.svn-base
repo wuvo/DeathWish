@@ -1,0 +1,550 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using System.Text;
+using System.IO;
+
+namespace NewestCOServer.PacketHandling
+{
+    public class Chat
+    {
+        public static void Handle(Main.GameClient GC, byte[] Data)
+        {
+            MemoryStream MS = new MemoryStream(Data);
+            BinaryReader BR = new BinaryReader(MS);
+            BR.ReadBytes(8);
+            ushort ChatType = (ushort)BR.ReadUInt32();
+            BR.ReadBytes(13);
+            string From = Encoding.ASCII.GetString(BR.ReadBytes(BR.ReadByte()));
+            string To = Encoding.ASCII.GetString(BR.ReadBytes(BR.ReadByte()));
+            BR.ReadByte();
+            string Message = Encoding.ASCII.GetString(BR.ReadBytes(BR.ReadByte()));
+            BR.Close();
+            MS.Close();
+            #region BadWords
+            Message = Message.Replace("damn", "****");
+            Message = Message.Replace("fuck", "****");
+            Message = Message.Replace("shit", "****");
+            Message = Message.Replace("stupid", "******");
+            Message = Message.Replace("wtf", "***");
+            Message = Message.Replace("idiot", "*****");
+            Message = Message.Replace("fucker", "******");
+            #endregion
+            if (ChatType == 2104 && GC.MyChar.MyShop != null)
+                GC.MyChar.MyShop.Hawk = Message;
+            try
+            {
+                if (Message[0] == '/')
+                {
+                    string[] Cmd = Message.Split(' ');
+                    if (Cmd[0] == "/dc")
+                    {
+                        GC.Disconnect();
+                        return;
+                    }
+                    if (Cmd[0] == "/players")
+                    {
+                        GC.LocalMessage(2000, "Players Online: " + Game.World.H_Chars.Count);
+                        string eMsg = "";
+                        foreach (Game.Character C in Game.World.H_Chars.Values)
+                            eMsg += C.Name + ", ";
+                        if (eMsg.Length > 1)
+                            eMsg = eMsg.Remove(eMsg.Length - 2, 2);
+                        GC.LocalMessage(2000, eMsg);
+                    }
+                    if (Cmd[0] == "/forcerevive")
+                    {
+                        if (!GC.MyChar.Alive)
+                        {
+                            if (DateTime.Now > GC.MyChar.DeathHit.AddSeconds(20))
+                            {
+                                GC.MyChar.Ghost = false;
+                                GC.MyChar.BlueName = false;
+                                GC.MyChar.CurHP = (ushort)GC.MyChar.MaxHP;
+                                GC.MyChar.Alive = true;
+                                GC.MyChar.StatEff.Remove(NewestCOServer.Game.StatusEffectEn.Dead);
+                                GC.MyChar.StatEff.Remove(NewestCOServer.Game.StatusEffectEn.BlueName);
+                                GC.MyChar.Body = GC.MyChar.Body;
+                                GC.MyChar.Hair = GC.MyChar.Hair;
+                                GC.MyChar.Equips.Send(GC, false);
+
+                                if (GC.MyChar.Loc.Map == 1038 && Features.GuildWars.War)
+                                    GC.MyChar.Teleport(6001, 32, 72);
+                                else
+                                {
+                                    if (GC.MyChar.PKPoints >= 100)
+                                        GC.MyChar.Teleport(6000, 32, 72);
+                                    else
+                                    {
+                                        foreach (ushort[] Point in Database.RevPoints)
+                                            if (Point[0] == GC.MyChar.Loc.Map)
+                                            {
+                                                GC.MyChar.Teleport(Point[1], Point[2], Point[3]);
+                                                break;
+                                            }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (Cmd[0] == "/revivehere" || Cmd[0] == "/rh")
+                    {
+                        if (!GC.MyChar.Alive)
+                        {
+                            if (DateTime.Now > GC.MyChar.DeathHit.AddSeconds(20))
+                            {
+                                if (GC.MyChar.BlessingLasts > 0)
+                                {
+                                    GC.MyChar.Ghost = false;
+                                    GC.MyChar.BlueName = false;
+                                    GC.MyChar.CurHP = (ushort)GC.MyChar.MaxHP;
+                                    GC.MyChar.Alive = true;
+                                    GC.MyChar.StatEff.Remove(NewestCOServer.Game.StatusEffectEn.Dead);
+                                    GC.MyChar.StatEff.Remove(NewestCOServer.Game.StatusEffectEn.BlueName);
+                                    GC.MyChar.Body = GC.MyChar.Body;
+                                    GC.MyChar.Hair = GC.MyChar.Hair;
+                                    GC.MyChar.Equips.Send(GC, false);
+
+                                    if (GC.MyChar.Loc.Map == 1038)
+                                        if (Features.GuildWars.War)
+                                        {
+                                            GC.LocalMessage(2005, "You cant revive here while guild war is on.");
+                                        }
+                                        else
+                                        {
+                                            GC.MyChar.Teleport(GC.MyChar.Loc.Map, GC.MyChar.Loc.X, GC.MyChar.Loc.Y);
+                                        }
+                                }
+                            }
+                        }
+                    }
+                    if (GC.AuthInfo.Status == "[GM]" || GC.AuthInfo.Status == "[PM]")
+                    {
+                        if (Cmd[0] == "/drop")
+                        {
+                            uint DropID = 0;
+                            
+                            Random Rnd = new Random();
+                            string DropWhat = Cmd[1].ToLower();
+                            byte HowMany = (byte)Math.Min(ushort.Parse(Cmd[2]), (ushort)255);
+                            switch (DropWhat)
+                            {
+                                case "dragonball": DropID = 1088000; break;
+                                case "meteor": DropID = 1088001; break;
+                                case "pointcard": DropID = 780000; break;
+                                case "moonbox": DropID = 721080; break;
+                                case "bag": DropID = 729910; break;
+                                case "ball": DropID = 723834; break;
+                            }
+                            Game.DroppedItem DI = new Game.DroppedItem();
+                            DI.DropTime = DateTime.Now;
+                            DI.UID = (uint)Rnd.Next(10000000);
+                            DI.Loc = new Game.Location();
+                            
+                            DI.Loc.Map = GC.MyChar.Loc.Map;
+                            DI.Info = new Game.Item();
+                            DI.Info.ID = DropID;
+                            DI.Info.UID = (uint)Rnd.Next(10000000);
+                            for (int x = 0; x < HowMany; x++)
+                            {
+                                DI.Loc.X = (ushort)(GC.MyChar.Loc.X + Rnd.Next(15) - Rnd.Next(15));
+                                DI.Loc.Y = (ushort)(GC.MyChar.Loc.Y + Rnd.Next(15) - Rnd.Next(15));
+                                if (!DI.FindPlace((Hashtable)Game.World.H_Items[GC.MyChar.Loc.Map])) continue;
+                                DI.Drop();
+                            }
+                        }
+                        if (Cmd[0] == "/robot")
+                        {
+                            string Account = "";
+                            string Name = Cmd[1];
+
+                            if (Game.World.CharacterFromName(Name) == null)
+                            {
+                                Game.Robot R = Database.LoadAsRobot(Name, ref Account);
+                                if (R != null)                                
+                                    R.Init(Account);                                
+                            }
+                        }
+                        if (Cmd[0] == "/reborn")
+                        {
+                            GC.MyChar.Reborns = byte.Parse(Cmd[1]);
+                        }
+                        if (Cmd[0] == "/gw" && !Features.GuildWars.War)
+                            Features.GuildWars.StartWar();
+                        if (Cmd[0] == "/gems")
+                        {
+                            if (GC.MyChar.Inventory.Count <= 32)
+                            {
+                                GC.MyChar.AddItem(700001);
+                                GC.MyChar.AddItem(700011);
+                                GC.MyChar.AddItem(700021);
+                                GC.MyChar.AddItem(700031);
+                                GC.MyChar.AddItem(700041);
+                                GC.MyChar.AddItem(700051);
+                                GC.MyChar.AddItem(700061);
+                                GC.MyChar.AddItem(700071);
+                                GC.MyChar.AddItem(700101);
+                                GC.MyChar.AddItem(700121);
+                            }
+                        }
+                        if (Cmd[0] == "/eqlow")
+                        {
+                            for (byte i = 1; i < 9; i++)
+                                if (i != 7)
+                                {
+                                    Game.Item I = GC.MyChar.Equips.Get(i);
+                                    if (I.ID != 0)
+                                    {
+                                        Game.ItemIDManipulation IDM = new NewestCOServer.Game.ItemIDManipulation(I.ID);
+                                        IDM.LowestLevel(i);
+                                        I.ID = IDM.ToID();
+                                        GC.AddSend(Packets.AddItem(I, i));
+                                    }
+                                }
+                        }                        
+                        if(Cmd[0] == "/appr")
+                            GC.AddSend(Packets.MentorApprenticePacket(GC.MyChar.EntityID, (uint)Program.Rnd.Next(1000001, 19999999), Cmd[1], byte.Parse(Cmd[2]), 1));
+                        if (Cmd[0] == "/protect")
+                            GC.MyChar.Protection = !GC.MyChar.Protection;
+                        if (Cmd[0] == "/effect")
+                            GC.AddSend(Packets.String(GC.MyChar.EntityID, 10, Cmd[1]));
+                        if (Cmd[0] == "/exp")
+                            GC.MyChar.Experience = ulong.Parse(Cmd[1]);
+                        if (Cmd[0] == "/pkp")
+                            GC.MyChar.PKPoints = ushort.Parse(Cmd[1]);
+                        if (Cmd[0] == "/atk")
+                            GC.AddSend(Packets.AttackPacket(GC.MyChar.EntityID, GC.MyChar.EntityID, GC.MyChar.Loc.X, GC.MyChar.Loc.Y, 9999, byte.Parse(Cmd[1])));
+                        if (Cmd[0] == "/recall")
+                        {
+                            if (Cmd[1] != "all")
+                            {
+                                Game.Character C = Game.World.CharacterFromName(Cmd[1]);
+                                if (C != null && C != GC.MyChar)
+                                    C.Teleport(GC.MyChar.Loc.Map, GC.MyChar.Loc.X, GC.MyChar.Loc.Y);
+                            }
+                            else
+                            {
+                                foreach (Game.Character C in Game.World.H_Chars.Values)
+                                    C.Teleport(GC.MyChar.Loc.Map, GC.MyChar.Loc.X, GC.MyChar.Loc.Y);
+                            }
+                        }
+                        if (Cmd[0] == "/c")
+                        {
+                            Game.World.SendMsgToAll(GC.MyChar.Name, Message.Remove(0, 3), 2011, 0);
+                        }
+                        if (Cmd[0] == "/try")
+                        {
+                            GC.AddSend(Packets.GeneralData(GC.MyChar.EntityID, 1, GC.MyChar.Loc.X, GC.MyChar.Loc.Y, byte.Parse(Cmd[1])));
+                        }
+                        if (Cmd[0] == "/steed")
+                        {
+                            Game.Item I = new NewestCOServer.Game.Item();
+                            I.ID = 300000;
+                            I.Plus = byte.Parse(Cmd[1]);
+                            I.MaxDur = I.DBInfo.Durability;
+                            I.CurDur = I.MaxDur;
+                            I.Effect = NewestCOServer.Game.Item.RebornEffect.Horsie;
+                            I.TalismanProgress = BitConverter.ToUInt32(new byte[4] {byte.Parse(Cmd[4]), byte.Parse(Cmd[3]), byte.Parse(Cmd[2]),0},0);
+                            I.UID = (uint)Program.Rnd.Next(10000000);
+                            GC.MyChar.AddItem(I);
+                        }
+                        if (Cmd[0] == "/ctele")
+                        {
+                            Game.Character C = Game.World.CharacterFromName(Cmd[1]);
+                            if (C != null)
+                                GC.MyChar.Teleport(C.Loc.Map, C.Loc.X, C.Loc.Y);
+                        }
+                        if (Cmd[0] == "/seff")
+                            GC.AddSend(Packets.Status(GC.MyChar.EntityID, Game.Status.Effect, ulong.Parse(Cmd[1])));
+                        
+                        if (Cmd[0] == "/vip")
+                        {
+                            GC.MyChar.VipLevel = byte.Parse(Cmd[1]); 
+                            GC.AddSend(Packets.ChatMessage(0, "SYSTEM", GC.MyChar.Name, "Congratulations! Your vip level is " + GC.MyChar.VipLevel +". Thank you for donating.", 2001, 0));
+                        }
+                        if (Cmd[0] == "/spawn")
+                        {
+                            if (Cmd.Length == 3)
+                            {
+                                GC.SpawnOnHold = !GC.SpawnOnHold;
+                                if (GC.SpawnOnHold)
+                                {
+                                    GC.SpawnXStart = GC.MyChar.Loc.X;
+                                    GC.SpawnYStart = GC.MyChar.Loc.Y;
+                                    GC.LocalMessage(2000, "Starting to create spawn; Spawn starts: " + GC.SpawnXStart + ", " + GC.SpawnYStart);
+                                }
+                                else
+                                {
+                                    GC.LocalMessage(2000, "Ending the spawn.");
+                                    StreamWriter SW = new StreamWriter(@"C:\OldCODB\MobSpawns.txt", true);
+                                    SW.WriteLine(Cmd[1] + " " + Cmd[2] + " " + GC.MyChar.Loc.Map + " " + GC.SpawnXStart + " " + GC.SpawnYStart + " " + GC.MyChar.Loc.X + " " + GC.MyChar.Loc.Y);
+                                    SW.Flush();
+                                    SW.Close();
+                                }
+                            }
+                        }
+
+                        if (Cmd[0] == "/try")
+                            GC.AddSend(Packets.GeneralData(GC.MyChar.EntityID, 0, 0, 0, byte.Parse(Cmd[1])));
+                        if (Cmd[0] == "/shopflag")
+                        {
+                            Game.NPC N = new NewestCOServer.Game.NPC(1234.ToString() + ' ' + 1080 + ' ' + 16 + ' ' + 6 + ' ' + 0 + ' ' + GC.MyChar.Loc.Map + ' ' + GC.MyChar.Loc.X + ' ' + GC.MyChar.Loc.Y);
+                            Game.World.Spawn(N);
+                        }
+                        if (Cmd[0] == "/guard")
+                        {
+                            StreamWriter SW = new StreamWriter(@"C:\OldCODB\MobSpawns.txt", true);
+                            SW.WriteLine(97 + " " + 1 + " " + GC.MyChar.Loc.Map + " " + GC.MyChar.Loc.X + " " + GC.MyChar.Loc.Y + " " + GC.MyChar.Loc.X + " " + GC.MyChar.Loc.Y);
+                            SW.Flush();
+                            SW.Close();
+                        }
+                        if (Cmd[0] == "/addnpc")
+                        {//uid type flags avatar
+                            //StreamWriter SW = new StreamWriter(@"C:\OldCODB\NPCs.txt", true);
+                            //SW.WriteLine(Cmd[1] + ' ' + Cmd[2] + ' ' + Cmd[3] + ' ' + GC.MyChar.Direction + ' ' + Cmd[4] + ' ' + GC.MyChar.Loc.Map + ' ' + GC.MyChar.Loc.X + ' ' + GC.MyChar.Loc.Y);
+                            //SW.Flush();
+                            //SW.Close();
+                            Game.NPC N = new NewestCOServer.Game.NPC(Cmd[1] + ' ' + Cmd[2] + ' ' + Cmd[3] + ' ' + GC.MyChar.Direction + ' ' + Cmd[4] + ' ' + GC.MyChar.Loc.Map + ' ' + GC.MyChar.Loc.X + ' ' + GC.MyChar.Loc.Y);
+                            //Game.World.H_NPCs.Add(N.EntityID, N);
+                            Game.World.Spawn(N);
+                        }
+                        if (Cmd[0] == "/quiz")
+                            if (!Features.QuizShow.QuizON)
+                                Features.QuizShow.Start();
+                        if (Cmd[0] == "/mb")
+                            GC.MyChar.AddItem(721080);
+                        if (Cmd[0] == "/status")
+                            GC.AddSend(Packets.Status(GC.MyChar.EntityID, (NewestCOServer.Game.Status)byte.Parse(Cmd[1]), ulong.Parse(Cmd[2])));
+                        if (Cmd[0] == "/xp")
+                        {
+                            GC.MyChar.StatEff.Add(NewestCOServer.Game.StatusEffectEn.XPStart);
+                            GC.MyChar.Buffs.Add(new Game.Buff() { StEff = NewestCOServer.Game.StatusEffectEn.XPStart, Lasts = 20, Started = DateTime.Now, Eff = NewestCOServer.Features.SkillsClass.ExtraEffect.None });
+                        }
+                        if (Cmd[0] == "/mana")
+                            GC.MyChar.CurMP = (ushort)GC.MyChar.MaxMP;
+                        if (Cmd[0] == "/newguild")
+                        {
+                            if (GC.MyChar.MyGuild == null)
+                            {
+                                try
+                                {
+                                    ushort NewGuildID = (ushort)Program.Rnd.Next(ushort.MaxValue);
+                                    while (Features.Guilds.AllTheGuilds.Contains(NewGuildID))
+                                        NewGuildID = (ushort)Program.Rnd.Next(ushort.MaxValue);
+                                    Features.Guilds.CreateNewGuild(Cmd[1], NewGuildID, GC.MyChar);
+                                    Game.World.Spawn(GC.MyChar, false);
+                                    
+                                    GC.AddSend(Packets.GuildInfo(GC.MyChar.MyGuild, GC.MyChar));
+                                    GC.AddSend(Packets.String(GC.MyChar.MyGuild.GuildID, (byte)Game.StringType.GuildName, GC.MyChar.MyGuild.GuildName));
+                                }
+                                catch (Exception Exc) { Program.WriteLine(Exc); }
+                            }
+                        }
+                        if (Cmd[0] == "/closeserver")
+                        {
+
+                            foreach (Game.Character C in Game.World.H_Chars.Values)
+                                try
+                                {
+                                    C.MyClient.LogOff(false);
+                                }
+                                catch { }
+                            Database.SaveKOs();
+                            Features.Guilds.SaveGuilds();
+                            Features.SkillsClass.Save();
+                            Environment.Exit(0);
+                        }
+                        if (Cmd[0] == "/lucky")
+                            GC.LocalMessage(2000,"Lucky time: "+GC.MyChar.LuckyTime);
+                        if (Cmd[0] == "/tryatk")
+                            GC.AddSend(Packets.AttackPacket(GC.MyChar.EntityID,GC.MyChar.EntityID,GC.MyChar.Loc.X,GC.MyChar.Loc.Y,300,byte.Parse(Cmd[1])));
+                        if (Cmd[0] == "/skill")
+                            GC.MyChar.RWSkill(new Game.Skill() { ID = ushort.Parse(Cmd[1]), Lvl = byte.Parse(Cmd[2]), Exp = 0 });
+                        if (Cmd[0] == "/prof")
+                            GC.MyChar.RWProf(new Game.Prof() { ID = ushort.Parse(Cmd[1]), Lvl = byte.Parse(Cmd[2]), Exp = 0 });
+                        if (Cmd[0] == "/blue")
+                            GC.MyChar.BlueName = !GC.MyChar.BlueName;
+                        if (Cmd[0] == "/level")
+                        {
+                            GC.MyChar.Experience = 0;
+                            GC.MyChar.Level = byte.Parse(Cmd[1]);
+                        }
+                        if (Cmd[0] == "/dropevent")
+                        {
+                            try
+                            {
+                                if (Program.DropEventTimer == null)
+                                {
+                                    bool start = true;
+                                    if (Cmd[1].ToLower() == "dragonball")
+                                    {
+                                        Program.DropEventType = "dragonball";
+                                        Program.SaveOldRate = DropRates.DragonBall;
+                                        DropRates.DragonBall = (DropRates.DragonBall * int.Parse(Cmd[3]));
+                                    }
+                                    else if (Cmd[1].ToLower() == "meteor")
+                                    {
+                                        Program.DropEventType = "meteor";
+                                        Program.SaveOldRate = DropRates.Meteor;
+                                        DropRates.Meteor = (DropRates.Meteor * int.Parse(Cmd[3]));
+                                    }
+                                    else if (Cmd[1].ToLower() == "minicpbag")
+                                    {
+                                        Program.DropEventType = "minicpbag";
+                                        Program.SaveOldRate = DropRates.CPMiniBag;
+                                        DropRates.CPMiniBag = (DropRates.CPMiniBag * int.Parse(Cmd[3]));
+                                    }
+                                    else if (Cmd[1].ToLower() == "cpbag")
+                                    {
+                                        Program.DropEventType = "cpbag";
+                                        Program.SaveOldRate = DropRates.CPBag;
+                                        DropRates.CPBag = (DropRates.CPBag * int.Parse(Cmd[3]));
+                                    }
+                                    else
+                                        start = false;
+
+                                    if (start)
+                                    {
+                                        Program.DropEventTimer = new System.Timers.Timer();
+                                        Program.DropEventTimer.Interval = (int.Parse(Cmd[2]) * 60000);
+                                        Program.DropEventTimer.Elapsed += new System.Timers.ElapsedEventHandler(Program.QuestDropDone);
+                                        Program.DropEventTimer.Start();
+                                        Game.World.SendMsgToAll("Server", "[Event] Server will drop " + Cmd[1] + "s " + Cmd[3] + "x for " + Cmd[2] + " minutes.", 2001, 0);
+                                    }
+                                    else
+                                        GC.LocalMessage(2001, "Item name is not a dropevent!");
+                                }
+                                else
+                                    GC.LocalMessage(2001, "There is a running event, you must wait it end to start a new!");
+                            }
+                            catch { GC.LocalMessage(2001, "Wrongs values!"); GC.LocalMessage(2001, "Format: /questdrop ItemName Minutes Timers"); GC.LocalMessage(2001, "Example: /questdrop dragonball 15 1000    its in up the rates to 1000x in 15 minutos."); }
+                        }
+                        if (Cmd[0] == "/itemtest")
+                        {
+                            Game.Item I = new NewestCOServer.Game.Item();
+                            I.Effect = NewestCOServer.Game.Item.RebornEffect.Shield;
+                            I.ID = 410329;
+                            I.Plus = 12;
+                            I.Soc1 = NewestCOServer.Game.Item.Gem.SuperDragonGem;
+                            I.Soc2 = NewestCOServer.Game.Item.Gem.SuperRainbowGem;
+                            I.Bless = 5;
+                            I.Enchant = 200;
+                            I.UID = (uint)Program.Rnd.Next(10000000);
+                            GC.AddSend(Packets.AddItem(I, 0));
+                        }
+                        if (Cmd[0] == "/kick")
+                        {
+                            Game.Character C = Game.World.CharacterFromName(Cmd[1]);
+                            if (C != null)
+                                C.MyClient.Disconnect();
+                        }
+                        if (Cmd[0] == "/mob")
+                            GC.AddSend(Packets.SpawnEntity(ushort.Parse(Cmd[1]), "FuckFace" + Cmd[1], GC.MyChar.Loc));
+                        if (Cmd[0] == "/vp")
+                            GC.LocalMessage(2000, "You have " + GC.MyChar.VP + " virtue points.");
+                        if (Cmd[0] == "/map")
+                            GC.LocalMessage(2000, "The ID of the map you are on is " + GC.MyChar.Loc.Map);
+                        if (Cmd[0] == "/job")
+                            GC.MyChar.Job = byte.Parse(Cmd[1]);
+                        if (Cmd[0] == "/silvers")
+                            GC.MyChar.Silvers = uint.Parse(Cmd[1]);
+                        if (Cmd[0] == "/cps")
+                            GC.MyChar.CPs = uint.Parse(Cmd[1]);
+                        if (Cmd[0] == "/tele")
+                            GC.MyChar.Teleport(ushort.Parse(Cmd[1]), ushort.Parse(Cmd[2]), ushort.Parse(Cmd[3]));
+                        if (Cmd[0] == "/item")
+                        {
+                            uint ID = 0;
+                            foreach (DatabaseItem DI in Database.DatabaseItems.Values)
+                                if (DI.Name == Cmd[1])
+                                {
+                                    ID = DI.ID;
+                                    Game.ItemIDManipulation e = new Game.ItemIDManipulation(ID);
+                                    Game.Item.ItemQuality Quality = e.Quality;
+                                    
+                                    if (Cmd[2].ToLower() == "refined") Quality = Game.Item.ItemQuality.Refined;
+                                    else if (Cmd[2].ToLower() == "unique") Quality = Game.Item.ItemQuality.Unique;
+                                    else if (Cmd[2].ToLower() == "elite") Quality = Game.Item.ItemQuality.Elite;
+                                    else if (Cmd[2].ToLower() == "super") Quality = Game.Item.ItemQuality.Super;
+                                    else if (Cmd[2].ToLower() == "simple") Quality = Game.Item.ItemQuality.Simple;
+                                    else if (Cmd[2].ToLower() == "fixed") Quality = Game.Item.ItemQuality.Fixed;
+                                    else if (Cmd[2].ToLower() == "poor") Quality = Game.Item.ItemQuality.Poor;
+                                    else if (Cmd[2].ToLower() == "normal") Quality = Game.Item.ItemQuality.Normal;
+                                    if (e.Quality == Quality)
+                                        break;
+                                }
+                            if (ID != 0 && GC.MyChar.Inventory.Count < 40)
+                            {
+                                Game.ItemIDManipulation e = new Game.ItemIDManipulation(ID);
+                                Game.Item.ItemQuality Quality = e.Quality;
+                                bool change = true;
+                                if (Cmd[2].ToLower() == "refined") Quality = Game.Item.ItemQuality.Refined;
+                                else if (Cmd[2].ToLower() == "unique") Quality = Game.Item.ItemQuality.Unique;
+                                else if (Cmd[2].ToLower() == "elite") Quality = Game.Item.ItemQuality.Elite;
+                                else if (Cmd[2].ToLower() == "super") Quality = Game.Item.ItemQuality.Super;
+                                else if (Cmd[2].ToLower() == "simple") Quality = Game.Item.ItemQuality.Simple;
+                                else if (Cmd[2].ToLower() == "fixed") Quality = Game.Item.ItemQuality.Fixed;
+                                else if (Cmd[2].ToLower() == "poor") Quality = Game.Item.ItemQuality.Poor;
+                                else if (Cmd[2].ToLower() == "normal") Quality = Game.Item.ItemQuality.Normal;
+                                else change = false;
+                                if (change)
+                                    e.QualityChange(Quality);
+                                ID = e.ToID();
+                                if (!Database.DatabaseItems.ContainsKey(ID))
+                                {
+                                    return;
+                                }
+                                Game.Item I = new NewestCOServer.Game.Item();
+                                if (e.Part(0, 2) == 11 || e.Part(0, 2) == 13 || e.Part(0, 3) == 123 || e.Part(0, 3) == 141 || e.Part(0, 3) == 142)
+                                    I.Color = NewestCOServer.Game.Item.ArmorColor.Orange;
+                                //I.FreeItem = true;
+                                I.ID = ID;
+                                I.UID = (uint)Program.Rnd.Next(10000000);
+                                try
+                                {
+                                    I.MaxDur = I.DBInfo.Durability;
+                                    I.CurDur = I.MaxDur;
+                                }
+                                catch (Exception Exc) { Program.WriteLine(Exc); }
+                                try
+                                {
+                                    I.Plus = byte.Parse(Cmd[3]);
+                                }
+                                catch { }
+                                try
+                                {
+                                    I.Bless = byte.Parse(Cmd[4]);
+                                }
+                                catch { }
+                                try
+                                {
+                                    I.Enchant = byte.Parse(Cmd[5]);
+                                }
+                                catch { }
+                                try
+                                {
+                                    I.Soc1 = (Game.Item.Gem)byte.Parse(Cmd[6]);
+                                }
+                                catch { }
+                                try
+                                {
+                                    I.Soc2 = (Game.Item.Gem)byte.Parse(Cmd[7]);
+                                }
+                                catch { }
+                                I.Effect = NewestCOServer.Game.Item.RebornEffect.None;
+
+                                GC.MyChar.AddItem(I);
+                            }
+                        }
+                    }
+
+                }
+                else
+                    Game.World.Chat(GC.MyChar, ChatType, From, To, Message);
+            }
+            catch { }
+        }
+    }
+}

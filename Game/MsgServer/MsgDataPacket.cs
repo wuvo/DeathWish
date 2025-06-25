@@ -1614,7 +1614,6 @@ namespace DeathWish.Game.MsgServer
 
             ushort JumpX = data->dwParam_Lo;
             ushort JumpY = data->dwParam_Hi;
-            MsgLoader.SpeedProtect.JumpProdect(client);
             client.Player.Protect = Extensions.Time32.Now;
 
             if (client.Map == null)

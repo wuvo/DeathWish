@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NewestCOServer.PacketHandling.ItemPacket
+{
+    public class DropAnItem
+    {
+        public static void Handle(Main.GameClient GC, byte[] Data)
+        {
+            uint ItemUID = BitConverter.ToUInt32(Data, 4);
+            Game.Item I = GC.MyChar.FindInvItem(ItemUID);
+
+            if (I.ID != 0)
+            {
+                if (GC.MyChar.MyShop == null)
+                {
+                    if (!I.FreeItem)
+                    {
+                        if (!GC.GM)
+                        {
+                            Game.DroppedItem DI = new NewestCOServer.Game.DroppedItem();
+                            DI.Info = I;
+                            DI.DropTime = DateTime.Now;
+                            DI.Loc = GC.MyChar.Loc;
+                            DI.UID = (uint)Program.Rnd.Next(10000000);
+                            if (!DI.FindPlace((Hashtable)Game.World.H_Items[GC.MyChar.Loc.Map])) return;
+                            DI.Drop();
+                        }
+                        GC.MyChar.RemoveItem(I);
+                    }
+                    else
+                        GC.LocalMessage(2005, "Cannot drop Free items.");
+                }
+            }
+            else
+                GC.AddSend(Packets.ItemPacket(ItemUID, 0, 3));
+        }
+    }
+}

@@ -1587,9 +1587,7 @@ namespace DeathWish.Client
                     }
                 }
                 Extensions.Time32 timer = Extensions.Time32.Now;
-                //NetShield
-                Game.MsgLoader.CheatPacket.OnThread(client);
-                //NetShield
+
                 DateTime Now64 = DateTime.Now;
                 #region Room Flag WindWalker
                 if (client.Player.Map == 5051 || client.Player.Map == 5053 || client.Player.Map == 5054 || client.Player.Map == 5055 || client.Player.Map == 5056 || client.Player.Map == 5057 || client.Player.Map == 5058)

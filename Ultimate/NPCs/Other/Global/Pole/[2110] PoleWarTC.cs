@@ -1,0 +1,46 @@
+﻿using Ultimate.Main;
+using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using System.Text;
+using System.IO;
+using Ultimate.Game;
+using System.Threading;
+
+namespace Ultimate.NPCs
+{
+    public class NPC_2110 : NPCBase
+    {
+        public NPC_2110(Main.GameClient _client)
+            : base(_client)
+        {
+            ID = 2110;
+            Face = 13;
+            IsGlobal = true;
+        }
+
+        public override void Run(Main.GameClient GC, byte[] _data, ushort _linkback)
+        {
+          
+            Responses = new List<COPacket>();
+            AddAvatar();
+            switch (_linkback)
+            {
+                case 0:
+                    if (GC.MyChar.Loc.Map == 1000 || GC.MyChar.Loc.Map == 1011 || GC.MyChar.Loc.Map == 1020 || GC.MyChar.Loc.Map == 1015 || GC.MyChar.Loc.Map == 1002)
+                    {
+                        GC.AddSend(Packets.PopUp("Do you want to join Pole Domination TwinCity?", 1));
+                    }
+                    break;
+                case 1:
+                    GC.MyChar.Teleport(1002, 429, 269);
+                    break;
+            }
+
+            AddFinish();
+            Send();
+        }
+
+    }
+}

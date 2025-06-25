@@ -1,0 +1,31 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NewestCOServer.PacketHandling
+{
+    public class Portal
+    {
+        public static void Handle(Main.GameClient GC, byte[] Data)
+        {
+            ushort NewMap = GC.MyChar.Loc.Map;
+            ushort NewX = (ushort)(GC.MyChar.Loc.X + 3);
+            ushort NewY = (ushort)(GC.MyChar.Loc.Y - 2);
+
+
+            foreach (ushort[] p in Database.Portals)
+            {
+                if (p[0] == GC.MyChar.Loc.Map)
+                    if (MyMath.PointDistance(GC.MyChar.Loc.X, GC.MyChar.Loc.Y, p[1], p[2]) <= 5)
+                    {
+                        NewMap = p[3];
+                        NewX = p[4];
+                        NewY = p[5];
+                    }
+            }
+
+            GC.MyChar.Teleport(NewMap, NewX, NewY);
+        }
+    }
+}

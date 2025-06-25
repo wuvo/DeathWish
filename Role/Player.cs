@@ -3515,22 +3515,22 @@ namespace DeathWish.Role
             get { return _cps; }
             set
             {
-                if (value > 2147000000)
-                {
-                    value = 0;
-                    Owner.Socket.Disconnect();
-                    Database.SystemBannedAccount.AddBan(Owner.Player.UID, Owner.Player.Name, 99999, "Bug Cps.");
-                    MyConsole.WriteLine("Player " + Owner.Player.Name + " Banned To Bug Cps .");
-                    string logss = "[HighCPs]" + Name + " get " + value + " he have " + _cps + "";
-                    logss += Environment.StackTrace;
-                    Database.ServerDatabase.LoginQueue.Enqueue(logss); ;
-                }
-                if (value >= 100000)
-                {
-                    string logss = "[CheckCps]" + Name + " get " + value + " he have " + _cps + "";
-                    logss += Environment.StackTrace;
-                    Database.ServerDatabase.LoginQueue.Enqueue(logss); ;
-                }
+                //if (value > 2147000000)
+                //{
+                //    value = 0;
+                //    Owner.Socket.Disconnect();
+                //    Database.SystemBannedAccount.AddBan(Owner.Player.UID, Owner.Player.Name, 99999, "Bug Cps.");
+                //    MyConsole.WriteLine("Player " + Owner.Player.Name + " Banned To Bug Cps .");
+                //    string logss = "[HighCPs]" + Name + " get " + value + " he have " + _cps + "";
+                //    logss += Environment.StackTrace;
+                //    Database.ServerDatabase.LoginQueue.Enqueue(logss); ;
+                //}
+                //if (value >= 100000)
+                //{
+                //    string logss = "[CheckCps]" + Name + " get " + value + " he have " + _cps + "";
+                //    logss += Environment.StackTrace;
+                //    Database.ServerDatabase.LoginQueue.Enqueue(logss); ;
+                //}
                 _cps = value;
                 if (Owner.FullLoading)
                 {

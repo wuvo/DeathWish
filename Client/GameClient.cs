@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DeathWish.Game.MsgLoader;
 using DeathWish.Game.MsgServer;
-using TqShield;
 
 namespace DeathWish.Client
 {
@@ -59,25 +57,8 @@ namespace DeathWish.Client
         
         public bool ActiveClient = false;
         
-        public AutoHunting.AutoHandle AutoHandle;
-        //NetShield
-        public UInt16 Version;
-        public UInt16 DllVersion;
-        public String LoaderLanguage;
-        public String TqSerial;
-        public bool Newrole = false;
-        public object JumpLock = new object();
-        public DateTime PingPacket = DateTime.Now;
-        public DateTime SendCheckStamp = DateTime.Now;
-        public DateTime LastPingPacket = DateTime.Now;
-        public DateTime MemoryCheckStamp = DateTime.Now;
-        public DateTime ProcessesCheckStamp = DateTime.Now;
-        public DateTime ThreadCheckStamp = DateTime.Now;
-        public DateTime ConquerFileHashStamp = DateTime.Now;
-        public ProtectCipher ProCipher = new ProtectCipher();
-        public List<String> OpenedProcesses = new List<String>();
-        public String MacAddress;
-        //NetShield
+        public AutoHunting.AutoHandle AutoHandle;//changes
+        
         public int SelectedStage { get; set; }
         public int SelectedAttribute { get; set; }
         public Poker.Structures.PokerStructs.Player PokerPlayer;
@@ -974,7 +955,6 @@ namespace DeathWish.Client
 
         public uint ConnectionUID = 0;
         public Game.MsgServer.MsgLoginClient OnLogin = default(Game.MsgServer.MsgLoginClient);
-        public Game.MsgServer.MsgPCNum PcLogin = default(Game.MsgServer.MsgPCNum);
         public uint ActiveNpc = 0;
 
         public ServerFlag ClientFlag = ServerFlag.None;
@@ -1244,7 +1224,7 @@ namespace DeathWish.Client
         public Role.Instance.Spell MySpells;
         public Role.Instance.Confiscator Confiscator;
         public bool OnInterServer;
-        public System.Collections.Concurrent.ConcurrentDictionary<uint, PrizeInfo> MailBox;
+        public System.Collections.Concurrent.ConcurrentDictionary<uint, PrizeInfo> MailBox = new System.Collections.Concurrent.ConcurrentDictionary<uint, PrizeInfo>();
         public GameClient(ServerSockets.SecuritySocket _socket, bool _OnInterServer = false)
         {
             OnInterServer = _OnInterServer;
@@ -1269,7 +1249,7 @@ namespace DeathWish.Client
                     Socket.Game = this;
                     DHKey = new Cryptography.DiffieHellman(Cryptography.DHKeyExchange.KeyExchange.Str_P, Cryptography.DHKeyExchange.KeyExchange.Str_G);
                     Crypto = new Cryptography.TQCast5();
-                    Crypto.GenerateKey(System.Text.ASCIIEncoding.ASCII.GetBytes(_TqShield.GameCryptographyKey));
+                    Crypto.GenerateKey(System.Text.ASCIIEncoding.ASCII.GetBytes("32C6v6a98dA1A118"));
                     Socket.SetCrypto(Crypto);
                 }
             }
