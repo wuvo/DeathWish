@@ -22,6 +22,7 @@ namespace DeathWish.Game.MsgTournaments
         internal static DragonWar DragonWar;
         internal static LastManStand LastManStand;
         internal static KungfuSchool KungfuSchool;
+        internal static LuckyDraw LuckyDraw;
         internal static MsgTeamArena TeamArena;
         internal static MsgClassPKWar ClassPkWar;
         internal static MsgEliteTournament ElitePkTournament;
@@ -82,6 +83,7 @@ namespace DeathWish.Game.MsgTournaments
             DragonWar = new DragonWar();
             LastManStand = new LastManStand();
             KungfuSchool = new KungfuSchool();
+            LuckyDraw = new LuckyDraw();
             EliteGuildWar1st = new MsgEliteGuildWar1st();
             EliteGuildWar2nd = new MsgEliteGuildWar2nd();
             EliteGuildWar3rd = new MsgEliteGuildWar3rd();
